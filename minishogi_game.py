@@ -33,9 +33,9 @@ class Game:
             self.reset()
 
     def reset(self):
-        self.gameState = GameState(GameState.board_to_plane_stack(
+        self.game_state = GameState(GameState.board_to_plane_stack(
             Game.INITIAL_LAYOUT, [], [], 0, 1, 1))
-        self.currentPlayer = 1
+        self.current_player = 1
 
     """
     def step(self, action):
@@ -51,18 +51,17 @@ class GameState:
     def __init__(self, state):
         self.state = state
 
-    def _allowedActions(self):
+    """
+    def allowed_actions(self):
         moves = np.zeros(Game.QUEEN_MOVES + Game.KNIGHT_MOVES + Game.PR_QUEEN_MOVES + Game.PR_KNIGHT_MOVES + Game.DROP, Game.BOARD_Y, Game.BOARD_X), dtype=int)
         
-        return allowed
+        return allowed[][]
+    """
+    
+    def game_ended(self):
+        return  not (np.any(self.state[Game.ORDER.index("K")])) and (np.any(self.state[Game.ORDER.index('k')]))
 
     """
-	def _checkForEndGame(self):
-
-		return 0
-
-
-
 	def takeAction(self, action):
 		newBoard=np.array(self.board)
 		newBoard[action]=self.playerTurn
@@ -89,16 +88,16 @@ class GameState:
                     state[Game.ORDER.index(board[y][x])][y][x] = 1
         for i in range(0, len(hand1)):
             state[len(Game.ORDER) +
-                      Game.HAND_ORDER.index(hand1[i].upper)][0][0] += 1
+                      Game.HAND_ORDER.index(hand1[i].upper)] += 1
         for i in range(0, len(hand2)):
             state[len(Game.ORDER) + len(Game.HAND_ORDER) +
-                      Game.HAND_ORDER.index(hand2[i].upper)][0][0] += 1
+                      Game.HAND_ORDER.index(hand2[i].upper)] += 1
         for i in range(0, repetitions):
-            state[len(Game.ORDER) + (2 * len(Game.HAND_ORDER)) + i][0][0] = 1
+            state[len(Game.ORDER) + (2 * len(Game.HAND_ORDER)) + i] = np.ones((Game.BOARD_Y, Game.BOARD_X), dtype=int)
         state[len(Game.ORDER) + (2 * len(Game.HAND_ORDER)) +
-                  Game.ALLOWED_REPEATS][0][0] = (1 if colour == 'W' else -1)
+                  Game.ALLOWED_REPEATS] = (np.ones((Game.BOARD_Y, Game.BOARD_X), dtype=int) if colour == 'W' else np.ones((Game.BOARD_Y, Game.BOARD_X), dtype=int)*-1)
         state[len(Game.ORDER) + (2 * len(Game.HAND_ORDER)) +
-                  Game.ALLOWED_REPEATS + 1][0][0] = move_count
+                  Game.ALLOWED_REPEATS + 1] = np.ones((Game.BOARD_Y, Game.BOARD_X), dtype=int) * move_count
         return state
 
     """
@@ -144,7 +143,13 @@ class GameState:
 np.set_printoptions(threshold=np.nan)
 g = Game()
 f = open('board.txt', 'w')
-res = GameState.plane_stack_to_board(g.gameState.state)[0]
+"""
+res = GameState.plane_stack_to_board(g.game_state.state)[0]
 
 for i in range(0, len(res)):
     f.write('\t'.join(res[i]) + '\n')
+
+print(g.game_state.game_ended())
+"""
+f.write(np.array2string(g.game_state.state))
+print(g.game_state.game_ended())
