@@ -2,6 +2,7 @@ import numpy as np
 from collections import Counter
 import copy
 from hashlib import sha1
+from copy import deepcopy
 import logging
 logger = logging.getLogger(__name__)
 
@@ -27,6 +28,8 @@ class Game:
     PR_QUEEN_ACTIONS = QUEEN_ACTIONS
     PR_KNIGHT_ACTIONS = KNIGHT_ACTIONS
     DROP = len(HAND_ORDER)
+    ACTION_STACK_HEIGHT =  QUEEN_ACTIONS + KNIGHT_ACTIONS + PR_QUEEN_ACTIONS + PR_KNIGHT_ACTIONS + DROP
+    STATE_STACK_HEIGHT = (len(ORDER) + (2 * len(HAND_ORDER)) + ALLOWED_REPEATS + 1 + 1)
 
     def __init__(self):
         self.reset()
@@ -36,9 +39,7 @@ class Game:
         self.state_history = []
 
     def take_action(self, action):
-        #board, hand1, hand2, repetitions, colour, move_count = GameState.plane_stack_to_board(
-        #    self.stack)
-        next_state = Game.next_state(self.game_state, action)
+        next_state = self.game_state.action_to_state(action)
         self.state_history.append(next_state)
         self.game_state = next_state
 
@@ -46,153 +47,14 @@ class Game:
         self.state_history.append(next_state)
         self.game_state = next_state
 
-    @staticmethod
-    def next_states_array(state):
-        allowed_states = []
-
-        for x in range(0, Game.BOARD_X):
-            for y in range(0, Game.BOARD_Y):
-                if(state.board[y][x] in Game.ORDER[0:((len(Game.ORDER)//2))]):  # for all your peices
-                    logger.debug(str(state.board[y][x]) +
-                                  ' at ' + str(x) + ', '+str(y))
-                    piece_possible_actions = Game.piece_actions(state.board[y][x])
-                    #logger.debug('\n'+ str(piece_possible_actions))
-                    # TODO: add knight actions
-                    for direction in range(0, 8):
-                        for magnitude in range(1, Game.MAX_MOVE_MAGNITUDE):
-                            if piece_possible_actions[direction][magnitude-1]:
-                                new_x, new_y = Game.get_coordinates(
-                                    x, y, magnitude, direction)
-                                if(Game.check_bounds(new_x, new_y)):
-                                    if(state.board[new_y][new_x] not in Game.ORDER[0:((len(Game.ORDER)//2))]):
-                                        clear = True
-                                        for i in range(1, magnitude):
-                                            current_x, current_y = Game.get_coordinates(
-                                                x, y, i, direction)
-                                            #logger.debug('looking at {0}, {1}'.format(current_x, current_y))
-                                            if state.board[current_y][current_x] != '.':
-                                                clear = False
-                                                break
-
-                                        if(clear):
-                                            next_state= copy.deepcopy(state)
-                                            logger.debug('QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
-                                                state.board[y][x], x, y, new_x, new_y))
-                                            next_state.board[new_y][new_x] = next_state.board[y][x]
-                                            next_state.board[y][x] = '.'
-                                            next_state.board = Game.flip(next_state.board)
-                                            tmp = next_state.hand1
-                                            next_state.hand1 = next_state.hand2
-                                            next_state.hand2 = tmp
-                                            next_state.colour = 'W' if (next_state.colour == 'B') else 'B'
-                                            next_state.move_count += 1
-                                            allowed_states.append(next_state)
-
-
-                                            #logger.debug('z = ' + str(direction *
-                                            #              Game.MAX_MOVE_MAGNITUDE+(magnitude-1)))
-                                            if(new_y < Game.PROMOTION_ZONE_SIZE or y < Game.PROMOTION_ZONE_SIZE):
-                                                if(not Game.is_promoted(state.board[y][x])):
-                                                    logger.debug('PROMOTION QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
-                                                        state.board[y][x], x, y, new_x, new_y))
-                                                    next_state= copy.deepcopy(state)
-                                                    next_state.board[new_y][new_x] = Game.promote(next_state.board[y][x])
-                                                    next_state.board[y][x] = '.'
-                                                    next_state.board = Game.flip(next_state.board)
-                                                    tmp = next_state.hand1
-                                                    next_state.hand1 = next_state.hand2
-                                                    next_state.hand2 = tmp
-                                                    next_state.colour = 'W' if (next_state.colour == 'B') else 'B'
-                                                    next_state.move_count += 1
-                                                    allowed_states.append(next_state)
-
-        for dropcount in range(0, Game.DROP):
-            if(Game.HAND_ORDER[dropcount] in state.hand1):
-                for y in range(0, Game.BOARD_Y):
-                    for x in range(0, Game.BOARD_X):
-                        if state.board[y][x] == '.':
-                            if(Game.HAND_ORDER[dropcount] != 'P'):
-                                logger.debug('DROP: {0} to ({1}, {2})'.format(Game.HAND_ORDER[dropcount], x, y))
-                                piece = Game.HAND_ORDER[dropcount]
-                                next_state= copy.deepcopy(state)
-                                next_state.board[y][x] = piece
-                                next_state.hand1.remove(piece)                                
-                                next_state.board = Game.flip(next_state.board)
-                                tmp = next_state.hand1
-                                next_state.hand1 = next_state.hand2
-                                next_state.hand2 = tmp
-                                next_state.colour = 'W' if (next_state.colour == 'B') else 'B'
-                                next_state.move_count += 1
-                                allowed_states.append(next_state)
-                            else:
-                                if(y != 0 and state.board[y-1][x] != 'k'):
-                                    if('P' not in (row[x] for row in state.board)):
-                                        logger.debug('DROP: {0} to ({1}, {2})'.format(
-                                            Game.HAND_ORDER[dropcount], x, y))
-                                        piece = Game.HAND_ORDER[dropcount]
-                                        next_state= copy.deepcopy(state)
-                                        next_state.board[y][x] = piece
-                                        next_state.hand1.remove(piece)
-                                        next_state.board = Game.flip(next_state.board)
-                                        tmp = next_state.hand1
-                                        next_state.hand1 = next_state.hand2
-                                        next_state.hand2 = tmp
-                                        next_state.colour = 'W' if (next_state.colour == 'B') else 'B'
-                                        next_state.move_count += 1
-                                        allowed_states.append(next_state)
-        return allowed_states
-
-    @staticmethod
-    def next_state(state, action):
-        next_state= copy.deepcopy(state)
-        (x, y, z) = action
-        if(z < Game.QUEEN_ACTIONS):
-            direction = z // Game.MAX_MOVE_MAGNITUDE
-            magnitude = (z % Game.MAX_MOVE_MAGNITUDE) + 1
-            new_x, new_y = Game.get_coordinates(x, y, magnitude, direction)
-            if next_state.board[new_y][new_x] != '.' and next_state.board[new_y][new_x] != 'k':
-                next_state.hand1.append(Game.unpromote(next_state.board[new_y][new_x]))
-            next_state.board[new_y][new_x] = next_state.board[y][x]
-            next_state.board[y][x] = '.'
-        elif z < Game.QUEEN_ACTIONS + Game.KNIGHT_ACTIONS:  # TODO knight moves
-            pass
-        elif z < Game.QUEEN_ACTIONS + Game.KNIGHT_ACTIONS + Game.PR_QUEEN_ACTIONS:
-            direction = (z- Game.QUEEN_ACTIONS -
-                         Game.KNIGHT_ACTIONS) // Game.MAX_MOVE_MAGNITUDE
-            magnitude = ((z - Game.QUEEN_ACTIONS - Game.KNIGHT_ACTIONS) %
-                         Game.MAX_MOVE_MAGNITUDE) + 1
-            new_x, new_y = Game.get_coordinates(x, y, magnitude, direction)
-            if next_state.board[new_y][new_x] != '.' and next_state.board[new_y][new_x] != 'k':
-                next_state.hand1.append(Game.unpromote(next_state.board[new_y][new_x]))
-            next_state.board[new_y][new_x] = Game.promote(next_state.board[y][x])
-            next_state.board[y][x] = '.'
-        elif z < Game.QUEEN_ACTIONS + Game.KNIGHT_ACTIONS + Game.PR_QUEEN_ACTIONS + Game.PR_KNIGHT_ACTIONS:
-            pass #TODO PROMOTED KINGHT MOVES
-        else:
-            piece_index = z- Game.QUEEN_ACTIONS - Game.KNIGHT_ACTIONS - Game.PR_KNIGHT_ACTIONS - Game.PR_QUEEN_ACTIONS
-            piece = Game.HAND_ORDER[piece_index]
-            next_state.board[y][x] = piece
-            #logger.debug('piece = ' + next_state.board[y][x])            
-            #logger.debug(next_state.hand1)
-            next_state.hand1.remove(piece)
-        next_state.board = Game.flip(next_state.board)
-        #logger.debug('\n' + str(self.board).replace('], ', ']\n'))
-        tmp = next_state.hand1
-        next_state.hand1 = next_state.hand2
-        next_state.hand2 = tmp
-        next_state.colour = 'W' if (next_state.colour == 'B') else 'B'
-        next_state.move_count += 1
-        #self.stack = GameState.board_to_plane_stack(
-        #    board, hand1, hand2, repetitions, colour, move_count)
-        return next_state
-
+    
     @staticmethod
     def action_matrix_to_array(actions):
         action_pool = []
         for y in range(0, Game.BOARD_Y):
             for x in range(0, Game.BOARD_X):
                 for z in range(0, len(actions[0][0])):
-                    if(actions[y][x][z] == 1):
+                    if(actions[z][y][x] == 1):
                         action_pool.append((x, y, z))
         return action_pool
 
@@ -296,7 +158,7 @@ class Game:
 
     @staticmethod
     def is_promoted(piece):
-        return piece[0] == '+' or piece == 'K' or piece =='k' or piece =='G' or piece == 'g' #?????
+        return piece[0] == '+' or piece == 'K' or piece =='k' or piece =='G' or piece == 'g' 
 
     @staticmethod
     def unpromote(piece):
@@ -304,20 +166,10 @@ class Game:
 
     @staticmethod
     def promote(piece):
-        return '+' + piece.upper()
-
-    @classmethod
-    def flip(cls, board):
-        newboard = [x[:] for x in board]
-
-        for x in range(0, cls.BOARD_X):
-            for y in range(0, cls.BOARD_Y):
-                if(board[y][x].lower() == board[y][x]):
-                    board[y][x] = board[y][x].upper()
-                elif(board[y][x].upper() == board[y][x]):
-                    board[y][x] = board[y][x].lower()
-                newboard[cls.BOARD_Y-y-1][cls.BOARD_X-x-1] = board[y][x]
-        return newboard
+        if Game.is_promoted(piece): 
+            return piece
+        else: 
+            return '+' + piece.upper()
 
     @staticmethod
     def game_reward():
@@ -332,7 +184,6 @@ class GameState:
         self.repetitions = repetitions
         self.colour = colour
         self.move_count = move_count
-        
         logger.info(self.print())
 
 
@@ -344,9 +195,28 @@ class GameState:
     def from_board(cls, args):
         return cls(args)
 
-    def allowed_actions(self):
-        actions = np.zeros((Game.BOARD_Y, Game.BOARD_X, Game.QUEEN_ACTIONS + Game.KNIGHT_ACTIONS +
-                            Game.PR_QUEEN_ACTIONS + Game.PR_KNIGHT_ACTIONS + Game.DROP), dtype=int)
+    def transition(self):
+        self.flip()
+        tmp = self.hand1
+        self.hand1 = self.hand2
+        self.hand2 = tmp
+        self.colour = 'W' if (self.colour == 'B') else 'B'
+        self.move_count += 1
+
+    def flip(self):
+        newboard = [x[:] for x in self.board]
+
+        for x in range(0, Game.BOARD_X):
+            for y in range(0, Game.BOARD_Y):
+                if(self.board[y][x].lower() == self.board[y][x]):
+                    self.board[y][x] = self.board[y][x].upper()
+                elif(self.board[y][x].upper() == self.board[y][x]):
+                    self.board[y][x] = self.board[y][x].lower()
+                newboard[Game.BOARD_Y-y-1][Game.BOARD_X-x-1] = self.board[y][x]
+        self.board = newboard
+
+    def allowed_actions_matrix(self):
+        actions = np.zeros((Game.ACTION_STACK_HEIGHT, Game.BOARD_Y, Game.BOARD_X), dtype=int)
         #board, hand1, hand2, repetitions, colour, move_count = GameState.plane_stack_to_board(
         #    self.stack)  # TODO REPETITIONS
         #logger.debug('\n' + str(board).replace('], ', ']\n'))
@@ -377,34 +247,138 @@ class GameState:
                                         if(clear):
                                             logger.debug('QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
                                                 self.board[y][x], x, y, new_x, new_y))
-                                            actions[y][x][direction *
-                                                          (Game.MAX_MOVE_MAGNITUDE)+(magnitude-1)] = 1
+                                            actions[direction *
+                                                          (Game.MAX_MOVE_MAGNITUDE)+(magnitude-1)][y][x] = 1
                                             #logger.debug('z = ' + str(direction *
                                             #              Game.MAX_MOVE_MAGNITUDE+(magnitude-1)))
                                             if(new_y < Game.PROMOTION_ZONE_SIZE or y < Game.PROMOTION_ZONE_SIZE):
                                                 if(not Game.is_promoted(self.board[y][x])):
                                                     logger.debug('PROMOTION QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
                                                         self.board[y][x], x, y, new_x, new_y))
-                                                    actions[y][x][Game.QUEEN_ACTIONS+ Game.KNIGHT_ACTIONS +
-                                                                  direction*(Game.MAX_MOVE_MAGNITUDE)+(magnitude-1)] = 1
+                                                    actions[Game.QUEEN_ACTIONS+ Game.KNIGHT_ACTIONS +
+                                                                  direction*(Game.MAX_MOVE_MAGNITUDE)+(magnitude-1)][y][x] = 1
         for dropcount in range(0, Game.DROP):
             if(Game.HAND_ORDER[dropcount] in self.hand1):
                 for y in range(0, Game.BOARD_Y):
                     for x in range(0, Game.BOARD_X):
                         if self.board[y][x] == '.':
-                            if(Game.HAND_ORDER[dropcount] != 'P'):
+                            if(Game.HAND_ORDER[dropcount] != 'P' or (y != 0 and self.board[y-1][x] != 'k' and ('P' not in (row[x] for row in self.board)))):
                                 logger.debug('DROP: {0} to ({1}, {2})'.format(
                                     Game.HAND_ORDER[dropcount], x, y))
-                                actions[y][x][Game.QUEEN_ACTIONS + Game.KNIGHT_ACTIONS +
-                                                Game.PR_QUEEN_ACTIONS + Game.PR_KNIGHT_ACTIONS+dropcount] = 1
-                            else:
-                                if(y != 0 and self.board[y-1][x] != 'k'):
-                                    if('P' not in (row[x] for row in self.board)):
-                                        logger.debug('DROP: {0} to ({1}, {2})'.format(
-                                            Game.HAND_ORDER[dropcount], x, y))
-                                        actions[y][x][Game.QUEEN_ACTIONS + Game.KNIGHT_ACTIONS +
-                                                        Game.PR_QUEEN_ACTIONS + Game.PR_KNIGHT_ACTIONS] = 1
+                                actions[Game.QUEEN_ACTIONS + Game.KNIGHT_ACTIONS +
+                                                Game.PR_QUEEN_ACTIONS + Game.PR_KNIGHT_ACTIONS+dropcount][y][x] = 1
         return actions
+
+    def next_states_array(self):
+        allowed_states = []
+
+        for x in range(0, Game.BOARD_X):
+            for y in range(0, Game.BOARD_Y):
+                if(self.board[y][x] in Game.ORDER[0:((len(Game.ORDER)//2))]):  # for all your peices
+                    logger.debug(str(self.board[y][x]) +
+                                  ' at ' + str(x) + ', '+str(y))
+                    piece_possible_actions = Game.piece_actions(self.board[y][x])
+                    #logger.debug('\n'+ str(piece_possible_actions))
+                    # TODO: add knight actions
+                    for direction in range(0, 8):
+                        for magnitude in range(1, Game.MAX_MOVE_MAGNITUDE):
+                            if piece_possible_actions[direction][magnitude-1]:
+                                new_x, new_y = Game.get_coordinates(
+                                    x, y, magnitude, direction)
+                                if(Game.check_bounds(new_x, new_y)):
+                                    if(self.board[new_y][new_x] not in Game.ORDER[0:((len(Game.ORDER)//2))]):
+                                        clear = True
+                                        for i in range(1, magnitude):
+                                            current_x, current_y = Game.get_coordinates(
+                                                x, y, i, direction)
+                                            #logger.debug('looking at {0}, {1}'.format(current_x, current_y))
+                                            if self.board[current_y][current_x] != '.':
+                                                clear = False
+                                                break
+
+                                        if(clear):
+                                            next_state= copy.deepcopy(self)
+                                            logger.debug('QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
+                                                self.board[y][x], x, y, new_x, new_y))
+
+                                            if self.board[new_y][new_x] != '.' and self.board[new_y][new_x] != 'k':
+                                                next_state.hand1.append(Game.unpromote(next_state.board[new_y][new_x]))
+                                            next_state.board[new_y][new_x] = next_state.board[y][x]
+                                            next_state.board[y][x] = '.'
+                                                
+                                            next_state.transition()
+                                            allowed_states.append(next_state)
+
+                                            if(new_y < Game.PROMOTION_ZONE_SIZE or y < Game.PROMOTION_ZONE_SIZE):
+                                                if(not Game.is_promoted(self.board[y][x])):
+                                                    logger.debug('PROMOTION QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
+                                                        self.board[y][x], x, y, new_x, new_y))
+                                                    next_state= copy.deepcopy(self)
+
+                                                    if self.board[new_y][new_x] != '.' and self.board[new_y][new_x] != 'k':
+                                                        next_state.hand1.append(Game.unpromote(next_state.board[new_y][new_x]))
+                                                    next_state.board[new_y][new_x] = Game.promote(next_state.board[y][x])
+                                                    next_state.board[y][x] = '.'
+
+                                                    next_state.transition()
+                                                    allowed_states.append(next_state)
+
+                for dropcount in range(0, Game.DROP):
+                    if(Game.HAND_ORDER[dropcount] in self.hand1):
+                        if self.board[y][x] == '.':
+                            if(Game.HAND_ORDER[dropcount] != 'P') or (y != 0 and self.board[y-1][x] != 'k' and ('P' not in (row[x] for row in self.board))):
+                                logger.debug('DROP: {0} to ({1}, {2})'.format(Game.HAND_ORDER[dropcount], x, y))
+                                piece = Game.HAND_ORDER[dropcount]
+                                next_state= copy.deepcopy(self)
+                                next_state.board[y][x] = piece
+                                next_state.hand1.remove(piece)                                
+                                next_state.transition()
+                                allowed_states.append(next_state)
+        return allowed_states
+
+    def action_to_state(self, action):
+        next_state= copy.deepcopy(self)
+        (x, y, z) = action
+        if(z < Game.QUEEN_ACTIONS):
+            direction = z // Game.MAX_MOVE_MAGNITUDE
+            magnitude = (z % Game.MAX_MOVE_MAGNITUDE) + 1
+            new_x, new_y = Game.get_coordinates(x, y, magnitude, direction)
+            if next_state.board[new_y][new_x] != '.' and next_state.board[new_y][new_x] != 'k':
+                next_state.hand1.append(Game.unpromote(next_state.board[new_y][new_x]))
+            next_state.board[new_y][new_x] = next_state.board[y][x]
+            next_state.board[y][x] = '.'
+        elif z < Game.QUEEN_ACTIONS + Game.KNIGHT_ACTIONS:  # TODO knight moves
+            pass
+        elif z < Game.QUEEN_ACTIONS + Game.KNIGHT_ACTIONS + Game.PR_QUEEN_ACTIONS:
+            direction = (z- Game.QUEEN_ACTIONS -
+                         Game.KNIGHT_ACTIONS) // Game.MAX_MOVE_MAGNITUDE
+            magnitude = ((z - Game.QUEEN_ACTIONS - Game.KNIGHT_ACTIONS) %
+                         Game.MAX_MOVE_MAGNITUDE) + 1
+            new_x, new_y = Game.get_coordinates(x, y, magnitude, direction)
+            if next_state.board[new_y][new_x] != '.' and next_state.board[new_y][new_x] != 'k':
+                next_state.hand1.append(Game.unpromote(next_state.board[new_y][new_x]))
+            next_state.board[new_y][new_x] = Game.promote(next_state.board[y][x])
+            next_state.board[y][x] = '.'
+        elif z < Game.QUEEN_ACTIONS + Game.KNIGHT_ACTIONS + Game.PR_QUEEN_ACTIONS + Game.PR_KNIGHT_ACTIONS:
+            pass #TODO PROMOTED KINGHT MOVES
+        else:
+            piece_index = z- Game.QUEEN_ACTIONS - Game.KNIGHT_ACTIONS - Game.PR_KNIGHT_ACTIONS - Game.PR_QUEEN_ACTIONS
+            piece = Game.HAND_ORDER[piece_index]
+            next_state.board[y][x] = piece
+            #logger.debug('piece = ' + next_state.board[y][x])            
+            #logger.debug(next_state.hand1)
+            next_state.hand1.remove(piece)
+        next_state.flip()
+        #logger.debug('\n' + str(self.board).replace('], ', ']\n'))
+        tmp = next_state.hand1
+        next_state.hand1 = next_state.hand2
+        next_state.hand2 = tmp
+        next_state.colour = 'W' if (next_state.colour == 'B') else 'B'
+        next_state.move_count += 1
+        #self.stack = GameState.board_to_plane_stack(
+        #    board, hand1, hand2, repetitions, colour, move_count)
+        return next_state
+
 
     def game_ended(self):
         #return not ((np.any(self.stack[Game.ORDER.index("K")])) and (np.any(self.stack[Game.ORDER.index('k')])))
@@ -412,8 +386,7 @@ class GameState:
 
     @staticmethod
     def board_to_plane_stack(board, hand1, hand2, repetitions, colour, move_count):
-        stack = np.zeros((len(Game.ORDER) + (2 * len(Game.HAND_ORDER)) +
-                          Game.ALLOWED_REPEATS + 1 + 1, Game.BOARD_X, Game.BOARD_Y), dtype=int)
+        stack = np.zeros((Game.STATE_STACK_HEIGHT, Game.BOARD_Y, Game.BOARD_X), dtype=int)
         for y in range(0, len(board)):
             for x in range(0, len(board[0])):
                 if(board[y][x] != '.'):
@@ -473,8 +446,14 @@ class GameState:
 
         return (board, hand1, hand2, repetitions, colour, move_count)
 
-    def print(self):
-        return '\n--'+ str(self.move_count) +'--\n' + str(self.board).replace('], ', ']\n')+'\nHand1: ' + str(self.hand1) + '\nHand2: ' + str(self.hand2) + '\nColour: ' + str(self.colour)
+    def print(self, level=0, flip=False):
+        margin = '\t' * level
+        state_copy = deepcopy(self)
+        if flip:
+            state_copy.flip()    
+        return '\n{0}--{1}--\n{0}{2}\n{0}Hand1: {3}\n{0}Hand2: {4}\n{0}Colour: {5}'.format(margin, self.move_count, str(state_copy.board).replace('], ', ']\n'+ margin), self.hand1, self.hand2, self.colour)
+        
+        #return '\n--'+ str(self.move_count) +'--\n' + str(self.board).replace('], ', ']\n')+'\nHand1: ' + str(self.hand1) + '\nHand2: ' + str(self.hand2) + '\nColour: ' + str(self.colour)
 
     def __hash__(self):
         return hash(str(GameState.board_to_plane_stack(self.board, self.hand1, self.hand2, self.repetitions, self.colour, self.move_count)))
