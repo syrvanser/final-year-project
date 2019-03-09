@@ -13,7 +13,7 @@ EPS = 1e-8
 
 class NNetMCTS(MCTS):
 
-    def __init__(self, nnet, args):  # args = numMCTSSims
+    def __init__(self, nnet, args, disable_logging=False):  # args = numMCTSSims
         self.nnet = nnet
         self.c_puct = args.c_puct
         self.n_sa = {}  # how many times a has been taken from state s
@@ -21,6 +21,7 @@ class NNetMCTS(MCTS):
         self.p_s = {}  # matrix list with action probs
         self.n_s = {}  # how many times s has been visited
         #self.action_matrices = {}   # dict with action matrices
+        logger.propagate = not disable_logging
         self.action_arrays = {}
         self.max_depth = args.max_depth
 
@@ -31,7 +32,7 @@ class NNetMCTS(MCTS):
         probs = [n/float(sum(freq)) for n in freq]
         return probs
 
-    def search(self, game):
+    def search(self, game, **kwargs):
 
         states_history_copy = game.state_history[:]
         action_history = []
@@ -49,7 +50,14 @@ class NNetMCTS(MCTS):
 
             if current_state not in self.p_s:
                 # leaf node
-                self.p_s[current_state], v = self.nnet.predict(current_state)
+                if self.nnet == 'shared':
+                    out_queue = kwargs.get('out')
+                    out_queue.put(current_state)
+                    in_queue = kwargs.get('in')
+
+
+                else:
+                    self.p_s[current_state], v = self.nnet.predict(current_state)
                 self.p_s[current_state] = self.p_s[current_state].reshape(
                     MiniShogiGame.ACTION_STACK_HEIGHT, MiniShogiGame.BOARD_Y, MiniShogiGame.BOARD_X)
                 valid_moves = current_state.allowed_actions_matrix()

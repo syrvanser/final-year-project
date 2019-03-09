@@ -23,10 +23,10 @@ args_max = DotDict({
     'max_example_games': 20,
     'num_epochs': 100,
     'c_puct': 1,
-    'max_examples_len': 200000,  # train examples
+    'max_examples_len': 100000,  # train examples
     'threshold': 0.6,
-    'max_example_history_len': 200000  # global examples
-
+    'max_example_history_len': 100000,  # global examples
+    'example_iter_number': 0
 })
 
 args_min = DotDict({
@@ -41,10 +41,10 @@ args_min = DotDict({
     'max_example_games': 10,
     'num_epochs': 100,
     'c_puct': 1,
-    'max_examples_len': 200000,  # train examples
+    'max_examples_len': 100000,  # train examples
     'threshold': 0.6,
-    'max_example_history_len': 200000  # global examples
-
+    'max_example_history_len': 100000,  # global examples
+    'example_iter_number' : 0
 })
 
 args = args_min
