@@ -1,4 +1,4 @@
-03/05/2019 03:49:31 PM: games          INFO     
+ 03/08/2019 04:52:20 PM: games.mini_shogi_game          INFO     
 --0--
 [['r', 'b', 's', 'g', 'k']
 ['.', '.', '.', '.', 'p']
@@ -8,104 +8,1092 @@
 Hand1: []
 Hand2: []
 Colour: W
-03/05/2019 03:49:31 PM: __main__       INFO     
---1--
+ 03/08/2019 04:52:23 PM: games.mini_shogi_game          INFO     
+--0--
 [['r', 'b', 's', 'g', 'k']
 ['.', '.', '.', '.', 'p']
 ['.', '.', '.', '.', '.']
-['P', 'G', '.', '.', '.']
-['K', '.', 'S', 'B', 'R']]
+['P', '.', '.', '.', '.']
+['K', 'G', 'S', 'B', 'R']]
 Hand1: []
 Hand2: []
-Colour: B
-03/05/2019 03:50:23 PM: __main__       INFO     
---2--
+Colour: W
+ 03/08/2019 04:52:23 PM: mcts.nnet_mcts                 INFO     Depth level: #0
+ 03/08/2019 04:52:23 PM: mcts.nnet_mcts                 INFO     
+--0--
 [['r', 'b', 's', 'g', 'k']
-['.', '.', '.', '.', '.']
 ['.', '.', '.', '.', 'p']
-['P', 'G', '.', '.', '.']
-['K', '.', 'S', 'B', 'R']]
+['.', '.', '.', '.', '.']
+['P', '.', '.', '.', '.']
+['K', 'G', 'S', 'B', 'R']]
 Hand1: []
 Hand2: []
 Colour: W
-03/05/2019 03:50:23 PM: __main__       INFO     
---3--
+ 03/08/2019 04:52:25 PM: mcts.nnet_mcts                 INFO     Depth level: #0
+ 03/08/2019 04:52:25 PM: mcts.nnet_mcts                 INFO     
+--0--
 [['r', 'b', 's', 'g', 'k']
-['.', '.', '.', '.', '.']
 ['.', '.', '.', '.', 'p']
-['P', 'G', '.', '.', 'R']
-['K', '.', 'S', 'B', '.']]
-Hand1: []
-Hand2: []
-Colour: B
-03/05/2019 03:51:18 PM: __main__       INFO     
---4--
-[['r', 'b', 's', 'g', 'k']
 ['.', '.', '.', '.', '.']
-['.', '.', '.', '.', '.']
-['P', 'G', '.', '.', 'p']
-['K', '.', 'S', 'B', '.']]
-Hand1: []
-Hand2: ['R']
-Colour: W
-03/05/2019 03:51:18 PM: __main__       INFO     
---5--
-[['r', 'b', 's', 'g', 'k']
-['.', '.', '.', '.', '.']
-['.', '.', '.', '.', '.']
-['P', 'G', 'S', '.', 'p']
-['K', '.', '.', 'B', '.']]
-Hand1: ['R']
-Hand2: []
-Colour: B
-03/05/2019 03:52:21 PM: __main__       INFO     
---6--
-[['r', 'b', 's', 'g', 'k']
-['.', '.', '.', '.', '.']
-['.', '.', '.', '.', '.']
-['P', 'G', 'S', '.', 'p']
-['K', '.', '.', 'B', 'r']]
+['P', '.', '.', '.', '.']
+['K', 'G', 'S', 'B', 'R']]
 Hand1: []
 Hand2: []
 Colour: W
-03/05/2019 03:52:21 PM: __main__       INFO     
---7--
+ 03/08/2019 04:52:25 PM: mcts.nnet_mcts                 INFO     Actions explored: 0/14
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0 n=0 p=0.07241283350089302
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Depth level: #1
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     
+	--1--
+	[['r', 'b', 's', '.', 'k']
+	['.', '.', 'g', '.', 'p']
+	['.', '.', '.', '.', '.']
+	['P', '.', '.', '.', '.']
+	['K', 'G', 'S', 'B', 'R']]
+	Hand1: []
+	Hand2: []
+	Colour: B
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Depth level: #0
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     
+--0--
 [['r', 'b', 's', 'g', 'k']
+['.', '.', '.', '.', 'p']
 ['.', '.', '.', '.', '.']
-['.', 'G', '.', '.', '.']
-['P', '.', 'S', '.', 'p']
-['K', '.', '.', 'B', 'r']]
+['P', '.', '.', '.', '.']
+['K', 'G', 'S', 'B', 'R']]
 Hand1: []
 Hand2: []
-Colour: B
-03/05/2019 03:53:22 PM: __main__       INFO     
---8--
-[['r', 'b', 's', 'g', 'k']
-['.', '.', '.', '.', '.']
-['.', 'G', '.', '.', '.']
-['P', '.', 'S', '.', 'p']
-['K', '.', '.', 'r', '.']]
-Hand1: []
-Hand2: ['B']
 Colour: W
-03/05/2019 03:53:22 PM: __main__       INFO     
---9--
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.012302853167057037 n=1 p=0.07241283350089302
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Depth level: #1
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     
+	--1--
+	[['r', 'b', 's', '.', 'k']
+	['.', '.', 'g', '.', 'p']
+	['.', '.', '.', '.', '.']
+	['P', '.', '.', '.', '.']
+	['K', 'G', 'S', 'B', 'R']]
+	Hand1: []
+	Hand2: []
+	Colour: B
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Actions explored: 0/14
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0 n=0 p=0.07210672143329518
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Depth level: #2
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     
+		--2--
+		[['.', 'b', 's', 'g', 'k']
+		['.', '.', '.', '.', 'p']
+		['r', '.', '.', '.', '.']
+		['P', '.', 'G', '.', '.']
+		['K', '.', 'S', 'B', 'R']]
+		Hand1: []
+		Hand2: []
+		Colour: W
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Depth level: #0
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     
+--0--
 [['r', 'b', 's', 'g', 'k']
+['.', '.', '.', '.', 'p']
 ['.', '.', '.', '.', '.']
-['.', 'G', 'S', '.', '.']
-['P', '.', '.', '.', 'p']
-['K', '.', '.', 'r', '.']]
-Hand1: ['B']
+['P', '.', '.', '.', '.']
+['K', 'G', 'S', 'B', 'R']]
+Hand1: []
 Hand2: []
-Colour: B
-03/05/2019 03:54:19 PM: __main__       INFO     
---10--
-[['r', 'b', 's', 'g', 'k']
-['.', '.', '.', '.', '.']
-['.', 'G', 'S', '.', '.']
-['P', '.', '.', '.', 'p']
-['r', '.', '.', '.', '.']]
-Hand1: []
-Hand2: ['B']
 Colour: W
-03/05/2019 03:54:19 PM: __main__       INFO     Stats: RandomAgent win 0 (0.0%), BasicMCTSAgent win 1 (100.0%)| time: 287.78510785102844
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0026353802531957626 n=2 p=0.07241283350089302
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Depth level: #1
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     
+	--1--
+	[['r', 'b', 's', '.', 'k']
+	['.', '.', 'g', '.', 'p']
+	['.', '.', '.', '.', '.']
+	['P', '.', '.', '.', '.']
+	['K', 'G', 'S', 'B', 'R']]
+	Hand1: []
+	Hand2: []
+	Colour: B
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.007032092660665512 n=1 p=0.07210672143329518
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Depth level: #2
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     
+		--2--
+		[['.', 'b', 's', 'g', 'k']
+		['.', '.', '.', '.', 'p']
+		['r', '.', '.', '.', '.']
+		['P', '.', 'G', '.', '.']
+		['K', '.', 'S', 'B', 'R']]
+		Hand1: []
+		Hand2: []
+		Colour: W
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Actions explored: 0/14
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0 n=0 p=0.07296832087725762
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Depth level: #3
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     
+			--3--
+			[['.', 'b', 's', '.', 'k']
+			['.', '.', 'g', '.', 'p']
+			['r', '.', '.', '.', 'R']
+			['P', '.', '.', '.', '.']
+			['K', 'G', 'S', 'B', '.']]
+			Hand1: []
+			Hand2: []
+			Colour: B
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     Depth level: #0
+ 03/08/2019 04:52:26 PM: mcts.nnet_mcts                 INFO     
+--0--
+[['r', 'b', 's', 'g', 'k']
+['.', '.', '.', '.', 'p']
+['.', '.', '.', '.', '.']
+['P', '.', '.', '.', '.']
+['K', 'G', 'S', 'B', 'R']]
+Hand1: []
+Hand2: []
+Colour: W
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0066408102090160055 n=3 p=0.07241283350089302
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Depth level: #1
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     
+	--1--
+	[['r', 'b', 's', '.', 'k']
+	['.', '.', 'g', '.', 'p']
+	['.', '.', '.', '.', '.']
+	['P', '.', '.', '.', '.']
+	['K', 'G', 'S', 'B', 'R']]
+	Hand1: []
+	Hand2: []
+	Colour: B
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Selecting action with q=-0.003809788729995489 n=2 p=0.07210672143329518
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Depth level: #2
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     
+		--2--
+		[['.', 'b', 's', 'g', 'k']
+		['.', '.', '.', '.', 'p']
+		['r', '.', '.', '.', '.']
+		['P', '.', 'G', '.', '.']
+		['K', '.', 'S', 'B', 'R']]
+		Hand1: []
+		Hand2: []
+		Colour: W
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.01465167012065649 n=1 p=0.07296832087725762
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Depth level: #3
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     
+			--3--
+			[['.', 'b', 's', '.', 'k']
+			['.', '.', 'g', '.', 'p']
+			['r', '.', '.', '.', 'R']
+			['P', '.', '.', '.', '.']
+			['K', 'G', 'S', 'B', '.']]
+			Hand1: []
+			Hand2: []
+			Colour: B
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Actions explored: 0/18
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0 n=0 p=0.05636846042769138
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Depth level: #4
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     
+				--4--
+				[['.', 'b', 's', 'g', 'k']
+				['.', '.', '.', '.', 'p']
+				['.', '.', '.', 'r', 'R']
+				['P', '.', 'G', '.', '.']
+				['K', '.', 'S', 'B', '.']]
+				Hand1: []
+				Hand2: []
+				Colour: W
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Depth level: #0
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     
+--0--
+[['r', 'b', 's', 'g', 'k']
+['.', '.', '.', '.', 'p']
+['.', '.', '.', '.', '.']
+['P', '.', '.', '.', '.']
+['K', 'G', 'S', 'B', 'R']]
+Hand1: []
+Hand2: []
+Colour: W
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0032145401928573847 n=4 p=0.07241283350089302
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Depth level: #1
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     
+	--1--
+	[['r', 'b', 's', '.', 'k']
+	['.', '.', 'g', '.', 'p']
+	['.', '.', '.', '.', '.']
+	['P', '.', '.', '.', '.']
+	['K', 'G', 'S', 'B', 'R']]
+	Hand1: []
+	Hand2: []
+	Colour: B
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Selecting action with q=-0.0001851025347908338 n=3 p=0.07210672143329518
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Depth level: #2
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     
+		--2--
+		[['.', 'b', 's', 'g', 'k']
+		['.', '.', '.', '.', 'p']
+		['r', '.', '.', '.', '.']
+		['P', '.', 'G', '.', '.']
+		['K', '.', 'S', 'B', 'R']]
+		Hand1: []
+		Hand2: []
+		Colour: W
+ 03/08/2019 04:52:27 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0037937001325190067 n=2 p=0.07296832087725762
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Depth level: #3
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     
+			--3--
+			[['.', 'b', 's', '.', 'k']
+			['.', '.', 'g', '.', 'p']
+			['r', '.', '.', '.', 'R']
+			['P', '.', '.', '.', '.']
+			['K', 'G', 'S', 'B', '.']]
+			Hand1: []
+			Hand2: []
+			Colour: B
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/18
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.007064269855618477 n=1 p=0.05636846042769138
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Depth level: #4
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     
+				--4--
+				[['.', 'b', 's', 'g', 'k']
+				['.', '.', '.', '.', 'p']
+				['.', '.', '.', 'r', 'R']
+				['P', '.', 'G', '.', '.']
+				['K', '.', 'S', 'B', '.']]
+				Hand1: []
+				Hand2: []
+				Colour: W
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Actions explored: 0/15
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0 n=0 p=0.06840612448905409
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Depth level: #5
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     
+					--5--
+					[['.', 'b', 's', '.', 'k']
+					['.', 'g', '.', '.', 'p']
+					['r', 'R', '.', '.', '.']
+					['P', '.', '.', '.', '.']
+					['K', 'G', 'S', 'B', '.']]
+					Hand1: []
+					Hand2: []
+					Colour: B
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Depth level: #0
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     
+--0--
+[['r', 'b', 's', 'g', 'k']
+['.', '.', '.', '.', 'p']
+['.', '.', '.', '.', '.']
+['P', '.', '.', '.', '.']
+['K', 'G', 'S', 'B', 'R']]
+Hand1: []
+Hand2: []
+Colour: W
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.006429878436028958 n=5 p=0.07241283350089302
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Depth level: #1
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     
+	--1--
+	[['r', 'b', 's', '.', 'k']
+	['.', '.', 'g', '.', 'p']
+	['.', '.', '.', '.', '.']
+	['P', '.', '.', '.', '.']
+	['K', 'G', 'S', 'B', 'R']]
+	Hand1: []
+	Hand2: []
+	Colour: B
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Selecting action with q=-0.004961634753271937 n=4 p=0.07210672143329518
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Depth level: #2
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     
+		--2--
+		[['.', 'b', 's', 'g', 'k']
+		['.', '.', '.', '.', 'p']
+		['r', '.', '.', '.', '.']
+		['P', '.', 'G', '.', '.']
+		['K', '.', 'S', 'B', 'R']]
+		Hand1: []
+		Hand2: []
+		Colour: W
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.008959543891251087 n=3 p=0.07296832087725762
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Depth level: #3
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     
+			--3--
+			[['.', 'b', 's', '.', 'k']
+			['.', '.', 'g', '.', 'p']
+			['r', '.', '.', '.', 'R']
+			['P', '.', '.', '.', '.']
+			['K', 'G', 'S', 'B', '.']]
+			Hand1: []
+			Hand2: []
+			Colour: B
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/18
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Selecting action with q=-0.006113480776548386 n=2 p=0.05636846042769138
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Depth level: #4
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     
+				--4--
+				[['.', 'b', 's', 'g', 'k']
+				['.', '.', '.', '.', 'p']
+				['.', '.', '.', 'r', 'R']
+				['P', '.', 'G', '.', '.']
+				['K', '.', 'S', 'B', '.']]
+				Hand1: []
+				Hand2: []
+				Colour: W
+ 03/08/2019 04:52:28 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/15
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.019291231408715248 n=1 p=0.06840612448905409
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Depth level: #5
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     
+					--5--
+					[['.', 'b', 's', '.', 'k']
+					['.', 'g', '.', '.', 'p']
+					['r', 'R', '.', '.', '.']
+					['P', '.', '.', '.', '.']
+					['K', 'G', 'S', 'B', '.']]
+					Hand1: []
+					Hand2: []
+					Colour: B
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Actions explored: 0/15
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0 n=0 p=0.06926392715313937
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Depth level: #6
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     
+						--6--
+						[['.', 'b', 's', 'g', 'k']
+						['.', '.', '.', '.', 'p']
+						['.', 'r', '.', '.', 'R']
+						['P', '.', '.', 'G', '.']
+						['K', '.', 'S', 'B', '.']]
+						Hand1: []
+						Hand2: []
+						Colour: W
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Depth level: #0
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     
+--0--
+[['r', 'b', 's', 'g', 'k']
+['.', '.', '.', '.', 'p']
+['.', '.', '.', '.', '.']
+['P', '.', '.', '.', '.']
+['K', 'G', 'S', 'B', 'R']]
+Hand1: []
+Hand2: []
+Colour: W
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0021988192262748876 n=6 p=0.07241283350089302
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Depth level: #1
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     
+	--1--
+	[['r', 'b', 's', '.', 'k']
+	['.', '.', 'g', '.', 'p']
+	['.', '.', '.', '.', '.']
+	['P', '.', '.', '.', '.']
+	['K', 'G', 'S', 'B', 'R']]
+	Hand1: []
+	Hand2: []
+	Colour: B
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Selecting action with q=-0.0001780124381184578 n=5 p=0.07210672143329518
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Depth level: #2
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     
+		--2--
+		[['.', 'b', 's', 'g', 'k']
+		['.', '.', '.', '.', 'p']
+		['r', '.', '.', '.', '.']
+		['P', '.', 'G', '.', '.']
+		['K', '.', 'S', 'B', 'R']]
+		Hand1: []
+		Hand2: []
+		Colour: W
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0019805387128144503 n=4 p=0.07296832087725762
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Depth level: #3
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     
+			--3--
+			[['.', 'b', 's', '.', 'k']
+			['.', '.', 'g', '.', 'p']
+			['r', '.', '.', '.', 'R']
+			['P', '.', '.', '.', '.']
+			['K', 'G', 'S', 'B', '.']]
+			Hand1: []
+			Hand2: []
+			Colour: B
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/18
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.00224317175646623 n=3 p=0.05636846042769138
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Depth level: #4
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     
+				--4--
+				[['.', 'b', 's', 'g', 'k']
+				['.', '.', '.', '.', 'p']
+				['.', '.', '.', 'r', 'R']
+				['P', '.', 'G', '.', '.']
+				['K', '.', 'S', 'B', '.']]
+				Hand1: []
+				Hand2: []
+				Colour: W
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/15
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0001673772931098938 n=2 p=0.06840612448905409
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     Depth level: #5
+ 03/08/2019 04:52:29 PM: mcts.nnet_mcts                 INFO     
+					--5--
+					[['.', 'b', 's', '.', 'k']
+					['.', 'g', '.', '.', 'p']
+					['r', 'R', '.', '.', '.']
+					['P', '.', '.', '.', '.']
+					['K', 'G', 'S', 'B', '.']]
+					Hand1: []
+					Hand2: []
+					Colour: B
+ 03/08/2019 04:52:30 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/15
+ 03/08/2019 04:52:30 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.01895647682249546 n=1 p=0.06926392715313937
+ 03/08/2019 04:52:30 PM: mcts.nnet_mcts                 INFO     Depth level: #6
+ 03/08/2019 04:52:30 PM: mcts.nnet_mcts                 INFO     
+						--6--
+						[['.', 'b', 's', 'g', 'k']
+						['.', '.', '.', '.', 'p']
+						['.', 'r', '.', '.', 'R']
+						['P', '.', '.', 'G', '.']
+						['K', '.', 'S', 'B', '.']]
+						Hand1: []
+						Hand2: []
+						Colour: W
+ 03/08/2019 04:52:30 PM: mcts.nnet_mcts                 INFO     Actions explored: 0/18
+ 03/08/2019 04:52:30 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0 n=0 p=0.059206875623409774
+ 03/08/2019 04:52:30 PM: mcts.nnet_mcts                 INFO     Depth level: #7
+ 03/08/2019 04:52:30 PM: mcts.nnet_mcts                 INFO     
+							--7--
+							[['.', 'b', 's', '.', 'k']
+							['.', '.', '.', '.', 'p']
+							['r', '.', 'g', 'R', '.']
+							['P', '.', '.', '.', '.']
+							['K', 'G', 'S', 'B', '.']]
+							Hand1: []
+							Hand2: []
+							Colour: B
+ 03/08/2019 04:52:30 PM: mcts.nnet_mcts                 INFO     Depth level: #0
+ 03/08/2019 04:52:30 PM: mcts.nnet_mcts                 INFO     
+--0--
+[['r', 'b', 's', 'g', 'k']
+['.', '.', '.', '.', 'p']
+['.', '.', '.', '.', '.']
+['P', '.', '.', '.', '.']
+['K', 'G', 'S', 'B', 'R']]
+Hand1: []
+Hand2: []
+Colour: W
+ 03/08/2019 04:52:30 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:30 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.004463148835514273 n=7 p=0.07241283350089302
+ 03/08/2019 04:52:30 PM: mcts.nnet_mcts                 INFO     Depth level: #1
+ 03/08/2019 04:52:30 PM: mcts.nnet_mcts                 INFO     
+	--1--
+	[['r', 'b', 's', '.', 'k']
+	['.', '.', 'g', '.', 'p']
+	['.', '.', '.', '.', '.']
+	['P', '.', '.', '.', '.']
+	['K', 'G', 'S', 'B', 'R']]
+	Hand1: []
+	Hand2: []
+	Colour: B
+ 03/08/2019 04:52:30 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:30 PM: mcts.nnet_mcts                 INFO     Selecting action with q=-0.0031565314469238124 n=6 p=0.07210672143329518
+ 03/08/2019 04:52:30 PM: mcts.nnet_mcts                 INFO     Depth level: #2
+ 03/08/2019 04:52:30 PM: mcts.nnet_mcts                 INFO     
+		--2--
+		[['.', 'b', 's', 'g', 'k']
+		['.', '.', '.', '.', 'p']
+		['r', '.', '.', '.', '.']
+		['P', '.', 'G', '.', '.']
+		['K', '.', 'S', 'B', 'R']]
+		Hand1: []
+		Hand2: []
+		Colour: W
+ 03/08/2019 04:52:30 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.005194256268441677 n=5 p=0.07296832087725762
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     Depth level: #3
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     
+			--3--
+			[['.', 'b', 's', '.', 'k']
+			['.', '.', 'g', '.', 'p']
+			['r', '.', '.', '.', 'R']
+			['P', '.', '.', '.', '.']
+			['K', 'G', 'S', 'B', '.']]
+			Hand1: []
+			Hand2: []
+			Colour: B
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/18
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     Selecting action with q=-0.002829902805387974 n=4 p=0.05636846042769138
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     Depth level: #4
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     
+				--4--
+				[['.', 'b', 's', 'g', 'k']
+				['.', '.', '.', '.', 'p']
+				['.', '.', '.', 'r', 'R']
+				['P', '.', 'G', '.', '.']
+				['K', '.', 'S', 'B', '.']]
+				Hand1: []
+				Hand2: []
+				Colour: W
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/15
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.00612796035905679 n=3 p=0.06840612448905409
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     Depth level: #5
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     
+					--5--
+					[['.', 'b', 's', '.', 'k']
+					['.', 'g', '.', '.', 'p']
+					['r', 'R', '.', '.', '.']
+					['P', '.', '.', '.', '.']
+					['K', 'G', 'S', 'B', '.']]
+					Hand1: []
+					Hand2: []
+					Colour: B
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/15
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.00045367516577243805 n=2 p=0.06926392715313937
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     Depth level: #6
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     
+						--6--
+						[['.', 'b', 's', 'g', 'k']
+						['.', '.', '.', '.', 'p']
+						['.', 'r', '.', '.', 'R']
+						['P', '.', '.', 'G', '.']
+						['K', '.', 'S', 'B', '.']]
+						Hand1: []
+						Hand2: []
+						Colour: W
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/18
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.018049126490950584 n=1 p=0.059206875623409774
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     Depth level: #7
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     
+							--7--
+							[['.', 'b', 's', '.', 'k']
+							['.', '.', '.', '.', 'p']
+							['r', '.', 'g', 'R', '.']
+							['P', '.', '.', '.', '.']
+							['K', 'G', 'S', 'B', '.']]
+							Hand1: []
+							Hand2: []
+							Colour: B
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     Actions explored: 0/17
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0 n=0 p=0.06086724984777154
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     Depth level: #8
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     
+								--8--
+								[['.', 'b', 's', 'g', '.']
+								['.', '.', '.', 'k', 'p']
+								['.', 'r', 'G', '.', 'R']
+								['P', '.', '.', '.', '.']
+								['K', '.', 'S', 'B', '.']]
+								Hand1: []
+								Hand2: []
+								Colour: W
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     Depth level: #0
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     
+--0--
+[['r', 'b', 's', 'g', 'k']
+['.', '.', '.', '.', 'p']
+['.', '.', '.', '.', '.']
+['P', '.', '.', '.', '.']
+['K', 'G', 'S', 'B', 'R']]
+Hand1: []
+Hand2: []
+Colour: W
+ 03/08/2019 04:52:31 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0008425348205491905 n=8 p=0.07241283350089302
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Depth level: #1
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     
+	--1--
+	[['r', 'b', 's', '.', 'k']
+	['.', '.', 'g', '.', 'p']
+	['.', '.', '.', '.', '.']
+	['P', '.', '.', '.', '.']
+	['K', 'G', 'S', 'B', 'R']]
+	Hand1: []
+	Hand2: []
+	Colour: B
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0007946535146662167 n=7 p=0.07210672143329518
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Depth level: #2
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     
+		--2--
+		[['.', 'b', 's', 'g', 'k']
+		['.', '.', '.', '.', 'p']
+		['r', '.', '.', '.', '.']
+		['P', '.', 'G', '.', '.']
+		['K', '.', 'S', 'B', 'R']]
+		Hand1: []
+		Hand2: []
+		Colour: W
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.00024491967633366585 n=6 p=0.07296832087725762
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Depth level: #3
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     
+			--3--
+			[['.', 'b', 's', '.', 'k']
+			['.', '.', 'g', '.', 'p']
+			['r', '.', '.', '.', 'R']
+			['P', '.', '.', '.', '.']
+			['K', 'G', 'S', 'B', '.']]
+			Hand1: []
+			Hand2: []
+			Colour: B
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/18
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.002636430412530899 n=5 p=0.05636846042769138
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Depth level: #4
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     
+				--4--
+				[['.', 'b', 's', 'g', 'k']
+				['.', '.', '.', '.', 'p']
+				['.', '.', '.', 'r', 'R']
+				['P', '.', 'G', '.', '.']
+				['K', '.', 'S', 'B', '.']]
+				Hand1: []
+				Hand2: []
+				Colour: W
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/15
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Selecting action with q=-0.0015294705517590046 n=4 p=0.06840612448905409
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Depth level: #5
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     
+					--5--
+					[['.', 'b', 's', '.', 'k']
+					['.', 'g', '.', '.', 'p']
+					['r', 'R', '.', '.', '.']
+					['P', '.', '.', '.', '.']
+					['K', 'G', 'S', 'B', '.']]
+					Hand1: []
+					Hand2: []
+					Colour: B
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/15
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.008469704538583755 n=3 p=0.06926392715313937
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Depth level: #6
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     
+						--6--
+						[['.', 'b', 's', 'g', 'k']
+						['.', '.', '.', '.', 'p']
+						['.', 'r', '.', '.', 'R']
+						['P', '.', '.', 'G', '.']
+						['K', '.', 'S', 'B', '.']]
+						Hand1: []
+						Hand2: []
+						Colour: W
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/18
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Selecting action with q=-0.003226318396627903 n=2 p=0.059206875623409774
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Depth level: #7
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     
+							--7--
+							[['.', 'b', 's', '.', 'k']
+							['.', '.', '.', '.', 'p']
+							['r', '.', 'g', 'R', '.']
+							['P', '.', '.', '.', '.']
+							['K', 'G', 'S', 'B', '.']]
+							Hand1: []
+							Hand2: []
+							Colour: B
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/17
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.02450176328420639 n=1 p=0.06086724984777154
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Depth level: #8
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     
+								--8--
+								[['.', 'b', 's', 'g', '.']
+								['.', '.', '.', 'k', 'p']
+								['.', 'r', 'G', '.', 'R']
+								['P', '.', '.', '.', '.']
+								['K', '.', 'S', 'B', '.']]
+								Hand1: []
+								Hand2: []
+								Colour: W
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Actions explored: 0/19
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0 n=0 p=0.05508186996245181
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     Depth level: #9
+ 03/08/2019 04:52:32 PM: mcts.nnet_mcts                 INFO     
+									--9--
+									[['.', 'b', 's', '.', 'k']
+									['.', '.', '.', '.', 'p']
+									['r', '.', '.', 'R', '.']
+									['P', 'K', '.', 'g', '.']
+									['.', 'G', 'S', 'B', '.']]
+									Hand1: []
+									Hand2: []
+									Colour: B
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Depth level: #0
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     
+--0--
+[['r', 'b', 's', 'g', 'k']
+['.', '.', '.', '.', 'p']
+['.', '.', '.', '.', '.']
+['P', '.', '.', '.', '.']
+['K', 'G', 'S', 'B', 'R']]
+Hand1: []
+Hand2: []
+Colour: W
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.003314872065352069 n=9 p=0.07241283350089302
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Depth level: #1
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     
+	--1--
+	[['r', 'b', 's', '.', 'k']
+	['.', '.', 'g', '.', 'p']
+	['.', '.', '.', '.', '.']
+	['P', '.', '.', '.', '.']
+	['K', 'G', 'S', 'B', 'R']]
+	Hand1: []
+	Hand2: []
+	Colour: B
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Selecting action with q=-0.002191374427638948 n=8 p=0.07210672143329518
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Depth level: #2
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     
+		--2--
+		[['.', 'b', 's', 'g', 'k']
+		['.', '.', '.', '.', 'p']
+		['r', '.', '.', '.', '.']
+		['P', '.', 'G', '.', '.']
+		['K', '.', 'S', 'B', 'R']]
+		Hand1: []
+		Hand2: []
+		Colour: W
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0035090125831110136 n=7 p=0.07296832087725762
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Depth level: #3
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     
+			--3--
+			[['.', 'b', 's', '.', 'k']
+			['.', '.', 'g', '.', 'p']
+			['r', '.', '.', '.', 'R']
+			['P', '.', '.', '.', '.']
+			['K', 'G', 'S', 'B', '.']]
+			Hand1: []
+			Hand2: []
+			Colour: B
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/18
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Selecting action with q=-0.0016519029935201008 n=6 p=0.05636846042769138
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Depth level: #4
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     
+				--4--
+				[['.', 'b', 's', 'g', 'k']
+				['.', '.', '.', '.', 'p']
+				['.', '.', '.', 'r', 'R']
+				['P', '.', 'G', '.', '.']
+				['K', '.', 'S', 'B', '.']]
+				Hand1: []
+				Hand2: []
+				Colour: W
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/15
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0033951375633478166 n=5 p=0.06840612448905409
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Depth level: #5
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     
+					--5--
+					[['.', 'b', 's', '.', 'k']
+					['.', 'g', '.', '.', 'p']
+					['r', 'R', '.', '.', '.']
+					['P', '.', '.', '.', '.']
+					['K', 'G', 'S', 'B', '.']]
+					Hand1: []
+					Hand2: []
+					Colour: B
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/15
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0005788858979940414 n=4 p=0.06926392715313937
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Depth level: #6
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     
+						--6--
+						[['.', 'b', 's', 'g', 'k']
+						['.', '.', '.', '.', 'p']
+						['.', 'r', '.', '.', 'R']
+						['P', '.', '.', 'G', '.']
+						['K', '.', 'S', 'B', '.']]
+						Hand1: []
+						Hand2: []
+						Colour: W
+ 03/08/2019 04:52:33 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/18
+ 03/08/2019 04:52:34 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.005546977743506432 n=3 p=0.059206875623409774
+ 03/08/2019 04:52:34 PM: mcts.nnet_mcts                 INFO     Depth level: #7
+ 03/08/2019 04:52:34 PM: mcts.nnet_mcts                 INFO     
+							--7--
+							[['.', 'b', 's', '.', 'k']
+							['.', '.', '.', '.', 'p']
+							['r', '.', 'g', 'R', '.']
+							['P', '.', '.', '.', '.']
+							['K', 'G', 'S', 'B', '.']]
+							Hand1: []
+							Hand2: []
+							Colour: B
+ 03/08/2019 04:52:34 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/17
+ 03/08/2019 04:52:34 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0007040966302156448 n=2 p=0.06086724984777154
+ 03/08/2019 04:52:34 PM: mcts.nnet_mcts                 INFO     Depth level: #8
+ 03/08/2019 04:52:34 PM: mcts.nnet_mcts                 INFO     
+								--8--
+								[['.', 'b', 's', 'g', '.']
+								['.', '.', '.', 'k', 'p']
+								['.', 'r', 'G', '.', 'R']
+								['P', '.', '.', '.', '.']
+								['K', '.', 'S', 'B', '.']]
+								Hand1: []
+								Hand2: []
+								Colour: W
+ 03/08/2019 04:52:34 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/19
+ 03/08/2019 04:52:34 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0230935700237751 n=1 p=0.05508186996245181
+ 03/08/2019 04:52:34 PM: mcts.nnet_mcts                 INFO     Depth level: #9
+ 03/08/2019 04:52:34 PM: mcts.nnet_mcts                 INFO     
+									--9--
+									[['.', 'b', 's', '.', 'k']
+									['.', '.', '.', '.', 'p']
+									['r', '.', '.', 'R', '.']
+									['P', 'K', '.', 'g', '.']
+									['.', 'G', 'S', 'B', '.']]
+									Hand1: []
+									Hand2: []
+									Colour: B
+ 03/08/2019 04:52:34 PM: mcts.nnet_mcts                 INFO     Actions explored: 0/22
+ 03/08/2019 04:52:34 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0 n=0 p=0.04712154516150902
+ 03/08/2019 04:52:34 PM: mcts.nnet_mcts                 INFO     Depth level: #10
+ 03/08/2019 04:52:34 PM: mcts.nnet_mcts                 INFO     
+										--10--
+										[['.', 'b', 's', '.', '.']
+										['.', 'G', 'g', 'k', 'p']
+										['.', 'r', '.', '.', 'R']
+										['P', '.', '.', '.', '.']
+										['K', '.', 'S', 'B', '.']]
+										Hand1: []
+										Hand2: []
+										Colour: W
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Depth level: #0
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     
+--0--
+[['r', 'b', 's', 'g', 'k']
+['.', '.', '.', '.', 'p']
+['.', '.', '.', '.', '.']
+['P', '.', '.', '.', '.']
+['K', 'G', 'S', 'B', 'R']]
+Hand1: []
+Hand2: []
+Colour: W
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0006454729475080967 n=10 p=0.07241283350089302
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Depth level: #1
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     
+	--1--
+	[['r', 'b', 's', '.', 'k']
+	['.', '.', 'g', '.', 'p']
+	['.', '.', '.', '.', '.']
+	['P', '.', '.', '.', '.']
+	['K', 'G', 'S', 'B', 'R']]
+	Hand1: []
+	Hand2: []
+	Colour: B
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0006497915213306745 n=9 p=0.07210672143329518
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Depth level: #2
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     
+		--2--
+		[['.', 'b', 's', 'g', 'k']
+		['.', '.', '.', '.', 'p']
+		['r', '.', '.', '.', '.']
+		['P', '.', 'G', '.', '.']
+		['K', '.', 'S', 'B', 'R']]
+		Hand1: []
+		Hand2: []
+		Colour: W
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0001479961210861802 n=8 p=0.07296832087725762
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Depth level: #3
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     
+			--3--
+			[['.', 'b', 's', '.', 'k']
+			['.', '.', 'g', '.', 'p']
+			['r', '.', '.', '.', 'R']
+			['P', '.', '.', '.', '.']
+			['K', 'G', 'S', 'B', '.']]
+			Hand1: []
+			Hand2: []
+			Colour: B
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/18
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0019239573074238642 n=7 p=0.05636846042769138
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Depth level: #4
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     
+				--4--
+				[['.', 'b', 's', 'g', 'k']
+				['.', '.', '.', '.', 'p']
+				['.', '.', '.', 'r', 'R']
+				['P', '.', 'G', '.', '.']
+				['K', '.', 'S', 'B', '.']]
+				Hand1: []
+				Hand2: []
+				Colour: W
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/15
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Selecting action with q=-0.0010672385493914287 n=6 p=0.06840612448905409
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Depth level: #5
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     
+					--5--
+					[['.', 'b', 's', '.', 'k']
+					['.', 'g', '.', '.', 'p']
+					['r', 'R', '.', '.', '.']
+					['P', '.', '.', '.', '.']
+					['K', 'G', 'S', 'B', '.']]
+					Hand1: []
+					Hand2: []
+					Colour: B
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/15
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.005138932541012764 n=5 p=0.06926392715313937
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Depth level: #6
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     
+						--6--
+						[['.', 'b', 's', 'g', 'k']
+						['.', '.', '.', '.', 'p']
+						['.', 'r', '.', '.', 'R']
+						['P', '.', '.', 'G', '.']
+						['K', '.', 'S', 'B', '.']]
+						Hand1: []
+						Hand2: []
+						Colour: W
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/18
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Selecting action with q=-0.0016845464706420898 n=4 p=0.059206875623409774
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     Depth level: #7
+ 03/08/2019 04:52:35 PM: mcts.nnet_mcts                 INFO     
+							--7--
+							[['.', 'b', 's', '.', 'k']
+							['.', '.', '.', '.', 'p']
+							['r', '.', 'g', 'R', '.']
+							['P', '.', '.', '.', '.']
+							['K', 'G', 'S', 'B', '.']]
+							Hand1: []
+							Hand2: []
+							Colour: B
+ 03/08/2019 04:52:36 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/17
+ 03/08/2019 04:52:36 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.008262437457839647 n=3 p=0.06086724984777154
+ 03/08/2019 04:52:36 PM: mcts.nnet_mcts                 INFO     Depth level: #8
+ 03/08/2019 04:52:36 PM: mcts.nnet_mcts                 INFO     
+								--8--
+								[['.', 'b', 's', 'g', '.']
+								['.', '.', '.', 'k', 'p']
+								['.', 'r', 'G', '.', 'R']
+								['P', '.', '.', '.', '.']
+								['K', '.', 'S', 'B', '.']]
+								Hand1: []
+								Hand2: []
+								Colour: W
+ 03/08/2019 04:52:36 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/19
+ 03/08/2019 04:52:36 PM: mcts.nnet_mcts                 INFO     Selecting action with q=-0.0001427745446562767 n=2 p=0.05508186996245181
+ 03/08/2019 04:52:36 PM: mcts.nnet_mcts                 INFO     Depth level: #9
+ 03/08/2019 04:52:36 PM: mcts.nnet_mcts                 INFO     
+									--9--
+									[['.', 'b', 's', '.', 'k']
+									['.', '.', '.', '.', 'p']
+									['r', '.', '.', 'R', '.']
+									['P', 'K', '.', 'g', '.']
+									['.', 'G', 'S', 'B', '.']]
+									Hand1: []
+									Hand2: []
+									Colour: B
+ 03/08/2019 04:52:36 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/22
+ 03/08/2019 04:52:36 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.023379119113087654 n=1 p=0.04712154516150902
+ 03/08/2019 04:52:36 PM: mcts.nnet_mcts                 INFO     Depth level: #10
+ 03/08/2019 04:52:36 PM: mcts.nnet_mcts                 INFO     
+										--10--
+										[['.', 'b', 's', '.', '.']
+										['.', 'G', 'g', 'k', 'p']
+										['.', 'r', '.', '.', 'R']
+										['P', '.', '.', '.', '.']
+										['K', '.', 'S', 'B', '.']]
+										Hand1: []
+										Hand2: []
+										Colour: W
+ 03/08/2019 04:52:36 PM: mcts.nnet_mcts                 INFO     Actions explored: 0/21
+ 03/08/2019 04:52:36 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0 n=0 p=0.05105769350093744
+ 03/08/2019 04:52:36 PM: mcts.nnet_mcts                 INFO     Depth level: #11
+ 03/08/2019 04:52:36 PM: mcts.nnet_mcts                 INFO     
+											--11--
+											[['.', 'b', 's', '.', 'k']
+											['.', '.', '.', '.', 'p']
+											['r', '.', '.', 'R', '.']
+											['P', 'K', 'G', '.', '.']
+											['.', '.', 'S', 'B', 'g']]
+											Hand1: []
+											Hand2: []
+											Colour: B
+ 03/08/2019 04:52:36 PM: mcts.nnet_mcts                 INFO     Depth level: #0
+ 03/08/2019 04:52:36 PM: mcts.nnet_mcts                 INFO     
+--0--
+[['r', 'b', 's', 'g', 'k']
+['.', '.', '.', '.', 'p']
+['.', '.', '.', '.', '.']
+['P', '.', '.', '.', '.']
+['K', 'G', 'S', 'B', 'R']]
+Hand1: []
+Hand2: []
+Colour: W
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0028953527693044057 n=11 p=0.07241283350089302
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     Depth level: #1
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     
+	--1--
+	[['r', 'b', 's', '.', 'k']
+	['.', '.', 'g', '.', 'p']
+	['.', '.', '.', '.', '.']
+	['P', '.', '.', '.', '.']
+	['K', 'G', 'S', 'B', 'R']]
+	Hand1: []
+	Hand2: []
+	Colour: B
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     Selecting action with q=-0.0019546027295291426 n=10 p=0.07210672143329518
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     Depth level: #2
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     
+		--2--
+		[['.', 'b', 's', 'g', 'k']
+		['.', '.', '.', '.', 'p']
+		['r', '.', '.', '.', '.']
+		['P', '.', 'G', '.', '.']
+		['K', '.', 'S', 'B', 'R']]
+		Hand1: []
+		Hand2: []
+		Colour: W
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/14
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0029531244395507705 n=9 p=0.07296832087725762
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     Depth level: #3
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     
+			--3--
+			[['.', 'b', 's', '.', 'k']
+			['.', '.', 'g', '.', 'p']
+			['r', '.', '.', '.', 'R']
+			['P', '.', '.', '.', '.']
+			['K', 'G', 'S', 'B', '.']]
+			Hand1: []
+			Hand2: []
+			Colour: B
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/18
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     Selecting action with q=-0.0014908062294125557 n=8 p=0.05636846042769138
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     Depth level: #4
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     
+				--4--
+				[['.', 'b', 's', 'g', 'k']
+				['.', '.', '.', '.', 'p']
+				['.', '.', '.', 'r', 'R']
+				['P', '.', 'G', '.', '.']
+				['K', '.', 'S', 'B', '.']]
+				Hand1: []
+				Hand2: []
+				Colour: W
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/15
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     Selecting action with q=0.0027129599558455603 n=7 p=0.06840612448905409
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     Depth level: #5
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     
+					--5--
+					[['.', 'b', 's', '.', 'k']
+					['.', 'g', '.', '.', 'p']
+					['r', 'R', '.', '.', '.']
+					['P', '.', '.', '.', '.']
+					['K', 'G', 'S', 'B', '.']]
+					Hand1: []
+					Hand2: []
+					Colour: B
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     Actions explored: 1/15
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     Selecting action with q=5.008528629938761e-05 n=6 p=0.06926392715313937
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     Depth level: #6
+ 03/08/2019 04:52:37 PM: mcts.nnet_mcts                 INFO     
+						--6--
+						[['.', 'b', 's', 'g', 'k']
+						['.', '.', '.', '.', 'p']
+						['.', 'r', '.', '.', 'R']
+						['P', '.', '.', 'G', '.']
+						['K', '.', 'S', 'B', '.']]
+						Hand1: []
+						Hand2: []
+						Colour: W
