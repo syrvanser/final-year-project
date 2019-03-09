@@ -40,23 +40,13 @@ class MiniShogiGame(Game):
         self.state_history.append(self.game_state)
 
     def take_action(self, action):
-        next_state = self.game_state.action_to_state(action)
+        next_state = MiniShogiGameState.action_to_state(self.game_state, action)
         self.state_history.append(next_state)
         self.game_state = next_state
 
     def move_to_next_state(self, next_state):
         self.state_history.append(next_state)
         self.game_state = next_state
-
-    @classmethod
-    def action_matrix_to_array(cls, actions):
-        action_pool = []
-        for y in range(0, cls.BOARD_Y):
-            for x in range(0, cls.BOARD_X):
-                for z in range(0, len(actions[0][0])):
-                    if actions[z][y][x] == 1:
-                        action_pool.append((x, y, z))
-        return action_pool
 
     @classmethod
     def piece_actions(cls, piece):
@@ -182,7 +172,7 @@ class MiniShogiGameState:
         self.repetitions = repetitions
         self.colour = colour
         self.move_count = move_count
-        logger.info(self.print())
+        
 
     @classmethod
     def from_plane_stack(cls, stack):
@@ -352,18 +342,32 @@ class MiniShogiGameState:
                                 allowed_states.append(next_state)
         return allowed_states
 
-    def matrix_to_array(self, matrix):
+    
+    @staticmethod
+    def action_matrix_to_action_array(state, matrix):
         array = []
         for x in range(0, MiniShogiGame.BOARD_X):
             for y in range(0, MiniShogiGame.BOARD_Y):
                 for z in range(0, MiniShogiGame.ACTION_STACK_HEIGHT):
                     if matrix[z][y][x] != 0:
-                        array.append(self.action_to_state((x, y, z, matrix[z][y][x])))
+                        array.append((z, y, x))
         return array
 
-    def action_to_state(self, action):
-        next_state = copy.deepcopy(self)
-        (x, y, z, prob) = action
+    
+    @staticmethod
+    def action_matrix_to_state_array(state, matrix):
+        array = []
+        for x in range(0, MiniShogiGame.BOARD_X):
+            for y in range(0, MiniShogiGame.BOARD_Y):
+                for z in range(0, MiniShogiGame.ACTION_STACK_HEIGHT):
+                    if matrix[z][y][x] != 0:
+                        array.append(MiniShogiGameState.action_to_state(state, (z, y, x)))
+        return array
+
+    @staticmethod
+    def action_to_state(state, action):
+        next_state = copy.deepcopy(state)
+        (z, y, x) = action
         if z < MiniShogiGame.QUEEN_ACTIONS:
             direction = z // MiniShogiGame.MAX_MOVE_MAGNITUDE
             magnitude = (z % MiniShogiGame.MAX_MOVE_MAGNITUDE) + 1
@@ -402,7 +406,7 @@ class MiniShogiGameState:
         next_state.move_count += 1
         # self.stack = MiniShogiGameState.board_to_plane_stack(
         #    board, hand1, hand2, repetitions, colour, move_count)
-        return next_state, prob
+        return next_state
 
     def game_ended(self):
         # return not ((np.any(self.stack[MiniShogiGame.ORDER.index("K")])) and (np.any(self.stack[MiniShogiGame.ORDER.index('k')])))
@@ -477,7 +481,7 @@ class MiniShogiGameState:
 
         return board, hand1, hand2, repetitions, colour, move_count
 
-    def print(self, level=0, flip=False):
+    def print_state(self, level=0, flip=False):
         margin = '\t' * level
         state_copy = deepcopy(self)
         if flip:

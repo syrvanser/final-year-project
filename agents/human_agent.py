@@ -13,7 +13,7 @@ class HumanShogiAgent(Agent):
 
     def act(self, game):
         actions = game.game_state.allowed_actions_matrix()
-        print(game.game_state.print())
+        print(game.game_state.print_state())
         drop_regex = re.compile(r'[G,P,B,R,S]\s[0-4]\s[0-4]')
         move_regex = re.compile(r'[0-4]\s[0-4]\s[0-4]\s[0-4](\sD)?')
         while True:
@@ -31,7 +31,7 @@ class HumanShogiAgent(Agent):
                 y = int(y)
                 z = MiniShogiGame.QUEEN_ACTIONS + MiniShogiGame.KNIGHT_ACTIONS + MiniShogiGame.PR_QUEEN_ACTIONS + \
                     MiniShogiGame.PR_KNIGHT_ACTIONS + MiniShogiGame.HAND_ORDER.index(piece)
-                if actions[y][x][z] == 1:
+                if actions[z][y][x] == 1:
                     game.take_action((x, y, z))
                     break
                 else:
@@ -45,7 +45,7 @@ class HumanShogiAgent(Agent):
                     z = MiniShogiGame.QUEEN_ACTIONS + MiniShogiGame.KNIGHT_ACTIONS + \
                         direction * MiniShogiGame.MAX_MOVE_MAGNITUDE + (magnitude - 1)
                 # print('trying (x, y, z): (' + str(x) + ', ' + str(y) + ', ' + str(z) + ')')
-                if actions[y][x][z] == 1:
+                if actions[z][y][x] == 1:
                     game.take_action((x, y, z))
                     break
                 else:

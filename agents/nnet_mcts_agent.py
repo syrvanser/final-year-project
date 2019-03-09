@@ -9,7 +9,7 @@ from pickle import Pickler, Unpickler
 import numpy as np
 
 from agents.agent import Agent
-from games.mini_shogi_game import MiniShogiGame
+from games.mini_shogi_game import MiniShogiGame, MiniShogiGameState
 from mcts.nnet_mcts import NNetMCTS
 
 logger = logging.getLogger(__name__)
@@ -24,6 +24,7 @@ class NNetMCTSAgent(Agent):
         self.nnet = nnet
         self.MCTS = NNetMCTS(nnet=self.nnet, args=self.args)
         self.example_history = []
+        self.iteration_examples = []
 
     def act(self, game):
 
@@ -31,44 +32,42 @@ class NNetMCTSAgent(Agent):
             logger.debug('Playout: #{0}'.format(i))
             self.MCTS.search(game)
 
-        states_pool = game.game_state.next_states_array()
+        action_pool = self.MCTS.action_arrays[game.game_state]
+        next_action = action_pool[np.random.choice(len(action_pool), p=self.MCTS.get_action_probs(game.game_state))]
 
-        next_state = states_pool[np.random.choice(len(states_pool), p=self.MCTS.pi(
-            states_pool))]  # sample action from improved policy
-
-        game.move_to_next_state(next_state)
+        game.take_action(next_action)
 
     def run_single_game(self):
-        examples = []
+        self.iteration_examples = []
         game = MiniShogiGame()
-        while True:
-            # self.logger.debug('Playout: #{0}'.format(i))
-            for i in range(self.args.limit):
-                logger.debug('Playout: #{0}'.format(i))
-                self.MCTS.search(game)
-            states_pool = game.game_state.next_states_array()
-            next_state = max(states_pool, key=(lambda s: self.MCTS.q.get(
-                s, 0) / self.MCTS.n.get(s, 1)))  # select state with max q/n ratio
-
-            examples.append(
-                [game.game_state, self.MCTS.p.get(game.game_state, 0), None])
-
-            game.move_to_next_state(next_state)
-
+        while True:     # set max game duration?
+            logger.info('\tStep: #{0}'.format(game.game_state.move_count))
+            logger.info(game.game_state.print_state(0, flip=game.game_state.colour == 'B'))
+            self.act(game)
             if game.game_state.game_ended():
                 break
 
-        for example in examples:
+        for example in self.iteration_examples:
             if game.game_state.colour == example[0].colour:
                 example[2] = -1
             else:
                 example[2] = 1
-        return examples
+        return self.iteration_examples
 
     def train_neural_net(self):
+        
+        logger.info('Loading previous examples and model')
+        try:
+            self.nnet.load_checkpoint(filename='temp.data')
+            self.example_history = self.load_examples(self.args.example_iter_number)
+        except Exception as e:
+            logger.error(e)
+        
         for i in range(self.args.num_epochs):
             iteration_examples = deque([], maxlen=self.args.max_examples_len)
+            logger.info('Generating examples')
             for e in range(self.args.max_example_games):
+                logger.info('Example {0}/{1}'.format(e, self.args.max_example_games))
                 self.MCTS = NNetMCTS(nnet=self.nnet, args=self.args)
                 # collect examples from this game
                 iteration_examples += self.run_single_game()
@@ -81,6 +80,8 @@ class NNetMCTSAgent(Agent):
 
             random.shuffle(iteration_examples)
 
+            logger.info('Example generation finished, starting training...')
+
             self.nnet.save_checkpoint(filename='temp.data')
             new_nnet = deepcopy(self.nnet)
             new_nnet.load_checkpoint(filename='temp.data')
@@ -88,12 +89,12 @@ class NNetMCTSAgent(Agent):
 
             # compare new net with previous net
             wins, nwins = self.simulate(new_nnet)
-
+            logger.info('Comparing two NNets')
             if wins + nwins == 0 or float(nwins) / (wins + nwins) < self.args.threshold:
-                logger.info('REJECTING NEW MODEL')
+                logger.info('Rejecting new NN')
                 self.nnet.load_checkpoint(filename='temp.data')
             else:
-                logger.info('ACCEPTING NEW MODEL')
+                logger.info('Accepting new NN')
                 self.nnet.save_checkpoint(filename='temp.data')
                 self.nnet.save_checkpoint(filename='best.data')
                 nnet = new_nnet  # replace with new net
@@ -113,15 +114,14 @@ class NNetMCTSAgent(Agent):
                 current_agent = agent1 if g.game_state.colour == 'W' else agent2
                 current_agent.act(g)
                 # print(g.game_state.print())
-                logger.info(g.game_state.print(
+                logger.debug(g.game_state.print_state(
                     flip=g.game_state.colour == 'B'))
                 if g.game_state.game_ended():
                     if g.game_state.colour == 'B':
                         white_wins += 1
                     logger.info('Stats: {0} win {1} ({2}%), {3} win {4} ({5}%)| time: {6}'.format(
                         agent1.__class__.__name__, white_wins, white_wins / i * 100, agent2.__class__.__name__,
-                                                               i - white_wins, (i - white_wins) / i * 100,
-                                                               time.time() - begin))
+                        i - white_wins, (i - white_wins) / i * 100, time.time() - begin))
                     break
 
             if x == 0:

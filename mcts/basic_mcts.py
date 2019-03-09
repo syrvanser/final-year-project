@@ -22,7 +22,7 @@ class BasicMCTS(MCTS):
         for i in range(self.max_depth):
             logger.debug('Depth level: #{0}'.format(i))
             current_state = states_history_copy[-1]
-            logger.debug(current_state.print(i))
+            logger.debug(current_state.print_state(i))
 
             # actions = current_state.allowed_actions()
             # action_pool = Game.action_matrix_to_array(actions)

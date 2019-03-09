@@ -22,8 +22,7 @@ class MiniShogiNNetWrapper:
         input_states, target_pis, target_vs = list(zip(*examples))
         input_states = np.asarray(input_states)
 
-        for state in input_states:
-            state = np.swapaxes(state, 0, -1) #???
+        list(map(lambda s: np.swapaxes(s, 0, -1), input_states))
 
         target_pis = np.asarray(target_pis)
         for target_pi in target_pis:
@@ -55,5 +54,5 @@ class MiniShogiNNetWrapper:
     def load_checkpoint(self, folder='checkpoints', filename='weight_checkpoint.data'):
         filepath = os.path.join(folder, filename)
         if not os.path.exists(filepath):
-            raise ("No model found in {0}".format(filepath))
+            raise Exception("No model found in {0}".format(filepath))
         self.nnet.model.load_weights(filepath)

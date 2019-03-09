@@ -11,7 +11,7 @@ from utils.dot_dict import DotDict
 
 logger = logging.getLogger(__name__)
 
-args = DotDict({
+args_max = DotDict({
     'lr': 0.001,
     'dropout': 0.3,
     'epochs': 10,
@@ -29,26 +29,46 @@ args = DotDict({
 
 })
 
+args_min = DotDict({
+    'lr': 0.001,
+    'dropout': 0.3,
+    'epochs': 10,
+    'batch_size': 64,
+    'num_channels': 512,
+    'filter_size': 3,
+    'limit': 15,  # num of mcts sims
+    'max_depth': 100,
+    'max_example_games': 10,
+    'num_epochs': 100,
+    'c_puct': 1,
+    'max_examples_len': 200000,  # train examples
+    'threshold': 0.6,
+    'max_example_history_len': 200000  # global examples
 
+})
+
+args = args_min
 # TODO fix drop, +k
 
 
 def play():
-    rounds = 1
+    rounds = 100
     white_wins = 0
+    agent1 = random_agent.RandomAgent()
+    agent2 = nnet_mcts_agent.NNetMCTSAgent(
+        MiniShogiNNetWrapper(args), args)
+    print('Preparing neural net')
+    agent2.train_neural_net()
+    print('Preparation complete')
     for i in range(1, rounds + 1):
         begin = time.time()
         print('Game {0}/{1}'.format(i, rounds))
         g = mini_shogi_game.MiniShogiGame()
-        agent1 = random_agent.RandomAgent()
-        agent2 = nnet_mcts_agent.NNetMCTSAgent(
-            MiniShogiNNetWrapper(args), args)
-        agent2.train_neural_net()
         while True:
             current_agent = agent1 if g.game_state.colour == 'W' else agent2
             current_agent.act(g)
             # print(g.game_state.print())
-            logger.info(g.game_state.print(flip=g.game_state.colour == 'B'))
+            logger.info(g.game_state.print_state(flip=g.game_state.colour == 'B'))
             if g.game_state.game_ended():
                 if g.game_state.colour == 'B':
                     white_wins += 1

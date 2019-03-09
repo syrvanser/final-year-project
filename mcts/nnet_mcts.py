@@ -1,105 +1,101 @@
 import logging
 import math
 from math import sqrt
-from random import shuffle
 
 import numpy as np
 
-from games.mini_shogi_game import MiniShogiGame
+from games.mini_shogi_game import MiniShogiGame, MiniShogiGameState
 from mcts.mcts import MCTS
 
 logger = logging.getLogger(__name__)
 EPS = 1e-8
 
+
 class NNetMCTS(MCTS):
-    
+
     def __init__(self, nnet, args):  # args = numMCTSSims
         self.nnet = nnet
         self.c_puct = args.c_puct
-        self.n = {}
-        self.q = {}
-        self.p = {}
-        self.e = {}  # stores game.getGameEnded ended for board s
-        self.valid_moves = {}
+        self.n_sa = {}  # how many times a has been taken from state s
+        self.q_sa = {}  # q value for taking a in state s
+        self.p_s = {}  # matrix list with action probs
+        self.n_s = {}  # how many times s has been visited
+        #self.action_matrices = {}   # dict with action matrices
+        self.action_arrays = {}
         self.max_depth = args.max_depth
 
-    def pi(self, state_pool):
-        return [self.p[state] for state in state_pool]
+    def get_action_probs(self, state):
+        #action_array = self.actions[state]
+        action_pool = self.action_arrays[state]
+        freq = [self.n_sa[(state, action)] if (state, action) in self.n_sa else 0 for action in action_pool]
+        probs = [n/float(sum(freq)) for n in freq]
+        return probs
 
     def search(self, game):
 
         states_history_copy = game.state_history[:]
-        visited_states = []
+        action_history = []
         v = 0
 
         for i in range(self.max_depth):
-            logger.info('Depth level: #{0}'.format(i))
+            logger.info('\t\t\tMCTS Depth level: #{0}'.format(i))
             current_state = states_history_copy[-1]
-            logger.info(current_state.print(i))
+            logger.debug(current_state.print_state(i))
 
             if current_state.game_ended():
-                logger.info('Found terminal node!')
+                logger.debug('Found terminal node!')
                 v = -1
                 break
 
-            if current_state not in self.p:
+            if current_state not in self.p_s:
                 # leaf node
-                self.p[current_state], v = self.nnet.predict(current_state)
-                self.p[current_state] = self.p[current_state].reshape(
+                self.p_s[current_state], v = self.nnet.predict(current_state)
+                self.p_s[current_state] = self.p_s[current_state].reshape(
                     MiniShogiGame.ACTION_STACK_HEIGHT, MiniShogiGame.BOARD_Y, MiniShogiGame.BOARD_X)
                 valid_moves = current_state.allowed_actions_matrix()
                 # masking invalid moves elementwise multiplication
-                self.p[current_state] = self.p[current_state] * valid_moves
-                sum_prob_vector = np.sum(self.p[current_state])
+                self.p_s[current_state] = self.p_s[current_state] * valid_moves
+                sum_prob_vector = np.sum(self.p_s[current_state])
                 if sum_prob_vector > 0:
-                    self.p[current_state] /= sum_prob_vector  # renormalize
+                    self.p_s[current_state] /= sum_prob_vector  # renormalize
 
                 else:
                     # if all valid moves were masked make all valid moves equally probable
                     logger.warning(
                         'All valid moves were masked, making all equally probable')
-                    self.p[current_state] = self.p[current_state] + valid_moves
+                    self.p_s[current_state] = valid_moves
                     # renormilise
-                    self.p[current_state] /= np.sum(self.p[current_state])
+                    self.p_s[current_state] /= np.sum(self.p_s[current_state])
 
-                # self.valid_moves[current_state] = valid_moves
-                self.n[current_state] = 0
+                #self.action_matrices[current_state] = valid_moves
+                self.action_arrays[current_state] = MiniShogiGameState.action_matrix_to_action_array(game.game_state, valid_moves)
+                self.n_s[current_state] = 0
                 break
 
-            states_pool = current_state.matrix_to_array(self.p[current_state])
-            # self.valid_moves[current_state])
+            action_pool_array = self.action_arrays[current_state]
 
-            # print (list(x[1] for x in states_pool))
+            next_action = max(action_pool_array, key=(
+                lambda a: (self.q_sa[(current_state, a)] + self.c_puct * self.p_s[current_state][a] *
+                           sqrt(self.n_s[current_state]) / (1 + self.n_sa[(current_state, a)])
+                           if (current_state, a) in self.q_sa
+                           else self.c_puct * self.p_s[current_state][a] * math.sqrt(self.n_s[current_state] + EPS))))
 
-            explored = sum(el[0] in self.n for el in states_pool)
-            logger.info(
-                'Actions explored: {0}/{1}'.format(explored, len(states_pool)))
+            logger.debug('Selecting action with q={0} n={1} p={2}'.format(
+                self.q_sa.get((current_state, next_action), 'n/a'), self.n_sa.get((current_state, next_action), 'n/a'),
+                self.p_s[current_state][next_action]))
 
-            # action_sum = sum(self.n.get(s[0], 0) for s in states_pool)
-
-            shuffle(states_pool)
-            # state -> prob(state) from self.p[current_state]
-            # state dict from action matrix with vals 
-
-            next_state_pair = max(states_pool, key=(
-                lambda s: ((self.q[s[0]] / self.n[s[0]]) + self.c_puct * s[1] * sqrt(  # change that !!!!
-                    self.n[current_state] / 1 + self.n[s[0]]) if s[1] in self.q else self.c_puct * s[1] * math.sqrt(
-                    self.n[current_state] + EPS))))
-            next_state, next_state_prob = next_state_pair
-
-            logger.info('Selecting action with q={0} n={1} p={2}'.format(
-                self.q.get(next_state, 'n/a'), self.n.get(next_state, 'n/a'), next_state_prob))
-
+            next_state = MiniShogiGameState.action_to_state(current_state, next_action)
             states_history_copy.append(next_state)
-            visited_states.append(next_state)
+            action_history.append((current_state, next_action))
 
-        for state in reversed(visited_states):
-            if state not in self.q:
-                self.q[state] = v
+        for (parent, action) in reversed(action_history):
+            if (parent, action) not in self.q_sa:
+                self.q_sa[(parent, action)] = v
                 v = -v
-                self.n[state] = 1
+                self.n_sa[(parent, action)] = 1
             else:
-                self.q[state] = (self.n[state] *
-                                     self.q[state] + v) / (self.n[state] + 1)
-                v=-v
-                self.n[state] += 1
+                self.q_sa[(parent, action)] = (self.n_sa[(parent, action)] *
+                                               self.q_sa[(parent, action)] + v) / (self.n_sa[(parent, action)] + 1)
+                v = -v
+                self.n_sa[(parent, action)] += 1
+            self.n_s[parent] += 1
