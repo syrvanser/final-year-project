@@ -13,7 +13,7 @@ EPS = 1e-8
 
 class NNetMCTS(MCTS):
 
-    def __init__(self, nnet, args):  # args = numMCTSSims
+    def __init__(self, nnet, args, disable_logging=False):  # args = numMCTSSims
         self.nnet = nnet
         self.c_puct = args.c_puct
         self.n_sa = {}  # how many times a has been taken from state s
@@ -21,6 +21,7 @@ class NNetMCTS(MCTS):
         self.p_s = {}  # matrix list with action probs
         self.n_s = {}  # how many times s has been visited
         #self.action_matrices = {}   # dict with action matrices
+        logger.propagate = not disable_logging
         self.action_arrays = {}
         self.max_depth = args.max_depth
 
