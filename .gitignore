@@ -3,3 +3,5 @@ __pycache__/
 .vscode/
 .idea/
 final-year-project.code-workspace
+checkpoints/
+examples.log

@@ -1,4 +1,3 @@
-import copy
 import logging
 import os
 import random
@@ -7,7 +6,6 @@ from collections import deque
 from pickle import Pickler, Unpickler
 
 import numpy as np
-import multiprocessing as mp
 
 from agents.agent import Agent
 from games.mini_shogi_game import MiniShogiGame
@@ -22,7 +20,7 @@ class NNetMCTSAgent(Agent):
 
         super().__init__()
         self.args = args
-
+        self.skip_first_self_play = False
         self.nnet = nnet
         self.MCTS = NNetMCTS(nnet=self.nnet, args=self.args)
         self.example_history = []
@@ -30,7 +28,7 @@ class NNetMCTSAgent(Agent):
     def act(self, game):
 
         for i in range(self.args.limit):
-            #logger.debug('Playout: #{0}'.format(i))
+            logger.debug('Playout: #{0}'.format(i))
             self.MCTS.search(game)
 
         action_tuple = (game.game_state, self.MCTS.p_s[game.game_state], None)
@@ -47,51 +45,55 @@ class NNetMCTSAgent(Agent):
         game = MiniShogiGame()
 
         while True:  # set max game duration?
-            #logger.info('\tStep: #{0}'.format(game.game_state.move_count))
-            #logger.info(game.game_state.print_state(0, flip=game.game_state.colour == 'B'))
+            # logger.info('\tStep: #{0}'.format(game.game_state.move_count))
+            # logger.info(game.game_state.print_state(0, flip=game.game_state.colour == 'B'))
             action = self.act(game)
             iteration_examples.append(action)
             if game.game_state.game_ended():
                 break
 
-        return [(e[0], e[1], (-1)**(game.game_state.colour == e[0].colour)) for e in iteration_examples]
+        return [(e[0], e[1], (-1) ** (game.game_state.colour == e[0].colour)) for e in iteration_examples]
 
     def train_neural_net(self):
 
         logger.info('Loading previous examples and model')
         try:
             self.nnet.load_checkpoint(filename='temp.data')
-            self.example_history = self.load_examples(filename='examples{0}.data'.format(self.args.example_iter_number))
+            self.load_examples(filename='examples{0}.data'.format(self.args.example_iter_number))
         except Exception as e:
             logger.error(e)
 
         for i in range(self.args.num_epochs):
-            iteration_examples = deque([], maxlen=self.args.max_examples_len)
             logger.info('Generating examples')
-            #self.MCTS = NNetMCTS(nnet=self.nnet, args=self.args)
+            if (not self.skip_first_self_play) or i > 0:
+                iteration_examples = deque([], maxlen=self.args.max_examples_len)
+                # self.MCTS = NNetMCTS(nnet=self.nnet, args=self.args)
                 # collect examples from this game
 
-            for e in range(self.args.max_example_games):
-                logger.info('Example {0}/{1}'.format(e, self.args.max_example_games))
-                self.MCTS = NNetMCTS(nnet=self.nnet, args=self.args)
-                # collect examples from this game
-                iteration_examples += self.run_single_game()
+                for e in range(self.args.max_example_games):
+                    logger.info('Example {0}/{1}'.format(e, self.args.max_example_games))
+                    self.MCTS = NNetMCTS(nnet=self.nnet, args=self.args)
+                    # collect examples from this game
+                    iteration_examples += self.run_single_game()
 
-            self.example_history.append(iteration_examples)
+                self.example_history.append(iteration_examples)
 
-            if len(self.example_history) > self.args.max_example_history_len:
-                self.example_history.pop(0)
+                if len(self.example_history) > self.args.max_example_history_len:
+                    self.example_history.pop(0)
 
-            self.save_examples(iteration_examples, i)
+                self.save_examples(i)
 
-            random.shuffle(iteration_examples)
+            train_examples = []
+            for e in self.example_history:
+                train_examples.extend(e)
+            random.shuffle(train_examples)
 
             logger.info('Example generation finished, starting training...')
 
             self.nnet.save_checkpoint(filename='temp.data')
             new_nnet = MiniShogiNNetWrapper(self.args)
             new_nnet.load_checkpoint(filename='temp.data')
-            new_nnet.train(iteration_examples)
+            new_nnet.train(train_examples)
 
             # compare new net with previous net
             wins, nwins = self.simulate(new_nnet)
@@ -136,16 +138,14 @@ class NNetMCTSAgent(Agent):
             else:
                 return (rounds - white_wins) / rounds, white_wins / rounds
 
-    @staticmethod
-    def save_examples(train_examples, iteration, folder='checkpoints', filename='examples'):
+    def save_examples(self, iteration, folder='checkpoints', filename='examples'):
         if not os.path.exists(folder):
             os.makedirs(folder)
         filename = os.path.join(folder, filename + str(iteration) + '.data')
         with open(filename, 'wb+') as f:
-            Pickler(f).dump(train_examples)
+            Pickler(f).dump(self.example_history)
 
-    @staticmethod
-    def load_examples(folder='checkpoints', filename='examples0.data'):
+    def load_examples(self, folder='checkpoints', filename='examples0.data'):
         examples_file = os.path.join(folder, filename)
         with open(examples_file, 'rb') as f:
-            return Unpickler(f).load()
+            self.example_history = Unpickler(f).load()
