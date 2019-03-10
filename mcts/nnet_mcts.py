@@ -6,6 +6,7 @@ import numpy as np
 
 from games.mini_shogi_game import MiniShogiGame, MiniShogiGameState
 from mcts.mcts import MCTS
+from nnets.nnet_wrapper import KerasManager
 
 logger = logging.getLogger(__name__)
 EPS = 1e-8
@@ -32,7 +33,7 @@ class NNetMCTS(MCTS):
         probs = [n/float(sum(freq)) for n in freq]
         return probs
 
-    def search(self, game, **kwargs):
+    def search(self, game):
 
         states_history_copy = game.state_history[:]
         action_history = []
@@ -50,14 +51,7 @@ class NNetMCTS(MCTS):
 
             if current_state not in self.p_s:
                 # leaf node
-                if self.nnet == 'shared':
-                    out_queue = kwargs.get('out')
-                    out_queue.put(current_state)
-                    in_queue = kwargs.get('in')
-
-
-                else:
-                    self.p_s[current_state], v = self.nnet.predict(current_state)
+                self.p_s[current_state], v = self.nnet.predict(current_state)
                 self.p_s[current_state] = self.p_s[current_state].reshape(
                     MiniShogiGame.ACTION_STACK_HEIGHT, MiniShogiGame.BOARD_Y, MiniShogiGame.BOARD_X)
                 valid_moves = current_state.allowed_actions_matrix()

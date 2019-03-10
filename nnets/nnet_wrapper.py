@@ -1,6 +1,8 @@
 import logging
 import os
 import time
+from multiprocessing import Lock
+from multiprocessing.managers import BaseManager
 
 import numpy as np
 
@@ -40,7 +42,9 @@ class MiniShogiNNetWrapper:
         stack = np.swapaxes(stack, 0, -1)
 
         stack = stack[np.newaxis, :, :, :]
-        pi, v = self.nnet.model.predict(stack)
+
+        with self.mutex:
+            pi, v = self.nnet.model.predict(stack)
 
         logger.debug('Prediction time : {0:03f}'.format(time.time() - start))
         return pi[0], v[0][0]
@@ -56,3 +60,10 @@ class MiniShogiNNetWrapper:
         if not os.path.exists(filepath):
             raise Exception("No model found in {0}".format(filepath))
         self.nnet.model.load_weights(filepath)
+
+
+class KerasManager(BaseManager):
+    pass
+
+
+KerasManager.register('MiniShogiNNetWrapper', MiniShogiNNetWrapper)

@@ -12,7 +12,7 @@ import multiprocessing as mp
 from agents.agent import Agent
 from games.mini_shogi_game import MiniShogiGame
 from mcts.nnet_mcts import NNetMCTS
-from nnets.nnet_wrapper import MiniShogiNNetWrapper
+from nnets.nnet_wrapper import MiniShogiNNetWrapper, KerasManager
 
 logger = logging.getLogger(__name__)
 
@@ -28,11 +28,11 @@ class NNetMCTSAgent(Agent):
         self.example_history = []
 
     def act(self, game):
-        self.act_parallel(game, self.MCTS)
+        self.act_parallel(game, self.MCTS, self.args)
 
-    def act_parallel(self, game, mcts):
+    def act_parallel(self, game, mcts, args):
 
-        for i in range(self.args.limit):
+        for i in range(args.limit):
             #logger.debug('Playout: #{0}'.format(i))
             mcts.search(game)
 
@@ -45,14 +45,15 @@ class NNetMCTSAgent(Agent):
 
         return action_tuple
 
-    def run_single_game(self):
+    def run_single_game(self, args, nnet):
         iteration_examples = []
         game = MiniShogiGame()
-        mcts = NNetMCTS(nnet='shared', args=self.args, disable_logging=True)
+
+        mcts = NNetMCTS(nnet=nnet, args=args, disable_logging=True)
         while True:  # set max game duration?
             #logger.info('\tStep: #{0}'.format(game.game_state.move_count))
             #logger.info(game.game_state.print_state(0, flip=game.game_state.colour == 'B'))
-            action = self.act_parallel(game, mcts)
+            action = self.act_parallel(game, mcts, args)
             iteration_examples.append(action)
             if game.game_state.game_ended():
                 break
@@ -76,10 +77,12 @@ class NNetMCTSAgent(Agent):
 
             with mp.Pool(processes=12) as pool:
                 #iteration_examples += self.run_single_game()
-                results = [pool.apply_async(self.run_single_game) for _ in range(0, self.args.max_example_games)]
-                output = [p.get() for p in results]
-                for o in output:
-                    iteration_examples += o
+                with KerasManager() as manager:
+                    nnet = manager.MiniShogiNNetWrapper(self.args)
+                    results = [pool.apply_async(self.run_single_game, (self.args,nnet)) for _ in range(0, self.args.max_example_games)]
+                    output = [p.get() for p in results]
+                    for o in output:
+                        iteration_examples += o
 
             self.example_history.append(iteration_examples)
 
