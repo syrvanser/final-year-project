@@ -12,3 +12,9 @@
  03/10/2019 01:27:28 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 1 (12.5%), new_nnet win 7 (87.5%)| time: 130.8559935092926
  03/10/2019 01:28:00 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 2 (22.22222222222222%), new_nnet win 7 (77.77777777777779%)| time: 32.765381813049316
  03/10/2019 01:28:46 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 2 (20.0%), new_nnet win 8 (80.0%)| time: 45.82740664482117
+ 03/10/2019 01:30:58 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 2 (18.181818181818183%), new_nnet win 9 (81.81818181818183%)| time: 131.9975025653839
+ 03/10/2019 01:31:17 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 3 (25.0%), new_nnet win 9 (75.0%)| time: 18.234220266342163
+ 03/10/2019 01:32:06 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 3 (23.076923076923077%), new_nnet win 10 (76.92307692307693%)| time: 49.11062479019165
+ 03/10/2019 01:32:18 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 4 (28.57142857142857%), new_nnet win 10 (71.42857142857143%)| time: 12.118576049804688
+ 03/10/2019 01:33:12 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 4 (26.666666666666668%), new_nnet win 11 (73.33333333333333%)| time: 54.264795541763306
+ 03/10/2019 01:33:35 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 4 (25.0%), new_nnet win 12 (75.0%)| time: 22.819498300552368
