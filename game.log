@@ -1,2 +1,3 @@
- 03/10/2019 02:25:02 AM: agents.nnet_mcts_agent         INFO     Loading previous examples and model
- 03/10/2019 02:25:02 AM: agents.nnet_mcts_agent         INFO     Generating examples
+ 03/10/2019 04:14:37 AM: agents.nnet_mcts_agent         INFO     Loading previous examples and model
+ 03/10/2019 04:14:37 AM: agents.nnet_mcts_agent         ERROR    No model found in checkpoints\temp.data
+ 03/10/2019 04:14:37 AM: agents.nnet_mcts_agent         INFO     Generating examples

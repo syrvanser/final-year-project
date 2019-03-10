@@ -4,59 +4,19 @@ import time
 
 import numpy as np
 
+import config
 from agents import random_agent, nnet_mcts_agent
 from games import mini_shogi_game
 from nnets.nnet_wrapper import MiniShogiNNetWrapper
-from utils.dot_dict import DotDict
 
 logger = logging.getLogger(__name__)
-
-args_max = DotDict({
-    'lr': 0.001,
-    'dropout': 0.3,
-    'epochs': 10,
-    'batch_size': 64,
-    'num_channels': 512,
-    'filter_size': 3,
-    'limit': 25,  # num of mcts sims
-    'max_depth': 150,
-    'max_example_games': 20,
-    'num_epochs': 100,
-    'c_puct': 1,
-    'max_examples_len': 100000,  # train examples
-    'threshold': 0.6,
-    'max_example_history_len': 100000,  # global examples
-    'example_iter_number': 0
-})
-
-args_min = DotDict({
-    'lr': 0.001,
-    'dropout': 0.3,
-    'epochs': 10,
-    'batch_size': 64,
-    'num_channels': 512,
-    'filter_size': 3,
-    'limit': 15,  # num of mcts sims
-    'max_depth': 100,
-    'max_example_games': 10,
-    'num_epochs': 100,
-    'c_puct': 1,
-    'max_examples_len': 100000,  # train examples
-    'threshold': 0.6,
-    'max_example_history_len': 100000,  # global examples
-    'example_iter_number' : 0
-})
-
-args = args_min
-# TODO fix drop, +k
 
 
 def play():
     rounds = 100
     white_wins = 0
     agent1 = random_agent.RandomAgent()
-    agent2 = nnet_mcts_agent.NNetMCTSAgent(
-        MiniShogiNNetWrapper(args), args)
+    agent2 = nnet_mcts_agent.NNetMCTSAgent(MiniShogiNNetWrapper())
     print('Preparing neural net')
     agent2.train_neural_net()
     print('Preparation complete')

@@ -4,7 +4,7 @@ import copy
 from copy import deepcopy
 import logging
 
-from games.game import Game
+from games import Game
 
 logger = logging.getLogger(__name__)
 
@@ -172,7 +172,6 @@ class MiniShogiGameState:
         self.repetitions = repetitions
         self.colour = colour
         self.move_count = move_count
-        
 
     @classmethod
     def from_plane_stack(cls, stack):
@@ -204,15 +203,12 @@ class MiniShogiGameState:
 
     def allowed_actions_matrix(self):
         actions = np.zeros((MiniShogiGame.ACTION_STACK_HEIGHT, MiniShogiGame.BOARD_Y, MiniShogiGame.BOARD_X), dtype=int)
-        # board, hand1, hand2, repetitions, colour, move_count = MiniShogiGameState.plane_stack_to_board(
-        #    self.stack)  # TODO REPETITIONS
-        # logger.debug('\n' + str(board).replace('], ', ']\n'))
+        # TODO REPETITIONS
         for x in range(0, MiniShogiGame.BOARD_X):
             for y in range(0, MiniShogiGame.BOARD_Y):
                 if (self.board[y][x] in MiniShogiGame.ORDER[
                                         0:(len(MiniShogiGame.ORDER) // 2)]):  # for all your peices
-                    logger.debug(str(self.board[y][x]) +
-                                      ' at ' + str(x) + ', ' + str(y))
+                    #logger.debug(str(self.board[y][x]) + ' at ' + str(x) + ', ' + str(y))
                     piece_possible_actions = MiniShogiGame.piece_actions(self.board[y][x])
                     # logger.debug('\n'+ str(piece_possible_actions))
                     # TODO: add knight actions
@@ -228,24 +224,22 @@ class MiniShogiGameState:
                                         for i in range(1, magnitude):
                                             current_x, current_y = MiniShogiGame.get_coordinates(
                                                 x, y, i, direction)
-                                            # logger.debug('looking at {0}, {1}'.format(current_x, current_y))
                                             if self.board[current_y][current_x] != '.':
                                                 clear = False
                                                 break
 
                                         if clear:
-                                            logger.debug('QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
-                                                self.board[y][x], x, y, new_x, new_y))
+                                            #logger.debug('QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
+                                                #self.board[y][x], x, y, new_x, new_y))
                                             actions[direction *
                                                     MiniShogiGame.MAX_MOVE_MAGNITUDE + (magnitude - 1)][y][x] = 1
-                                            # logger.debug('z = ' + str(direction *
-                                            #              MiniShogiGame.MAX_MOVE_MAGNITUDE+(magnitude-1)))
+
                                             if (
                                                     new_y < MiniShogiGame.PROMOTION_ZONE_SIZE or y < MiniShogiGame.PROMOTION_ZONE_SIZE):
                                                 if not MiniShogiGame.is_promoted(self.board[y][x]):
-                                                    logger.debug(
-                                                        'PROMOTION QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
-                                                            self.board[y][x], x, y, new_x, new_y))
+                                                    #logger.debug(
+                                                     #   'PROMOTION QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
+                                                      #      self.board[y][x], x, y, new_x, new_y))
                                                     actions[MiniShogiGame.QUEEN_ACTIONS + MiniShogiGame.KNIGHT_ACTIONS +
                                                             direction * MiniShogiGame.MAX_MOVE_MAGNITUDE + (
                                                                     magnitude - 1)][y][x] = 1
@@ -257,8 +251,8 @@ class MiniShogiGameState:
                             if (MiniShogiGame.HAND_ORDER[dropcount] != 'P' or (
                                     y != 0 and self.board[y - 1][x] != 'k' and (
                                     'P' not in (row[x] for row in self.board)))):
-                                logger.debug('DROP: {0} to ({1}, {2})'.format(
-                                    MiniShogiGame.HAND_ORDER[dropcount], x, y))
+                                #logger.debug('DROP: {0} to ({1}, {2})'.format(
+                                 #   MiniShogiGame.HAND_ORDER[dropcount], x, y))
                                 actions[MiniShogiGame.QUEEN_ACTIONS + MiniShogiGame.KNIGHT_ACTIONS +
                                         MiniShogiGame.PR_QUEEN_ACTIONS + MiniShogiGame.PR_KNIGHT_ACTIONS + dropcount][
                                     y][x] = 1
@@ -271,8 +265,8 @@ class MiniShogiGameState:
             for y in range(0, MiniShogiGame.BOARD_Y):
                 if (self.board[y][x] in MiniShogiGame.ORDER[
                                         0:(len(MiniShogiGame.ORDER) // 2)]):  # for all your pieces
-                    logger.debug(str(self.board[y][x]) +
-                                      ' at ' + str(x) + ', ' + str(y))
+                    #logger.debug(str(self.board[y][x]) +
+                    #             ' at ' + str(x) + ', ' + str(y))
                     piece_possible_actions = MiniShogiGame.piece_actions(self.board[y][x])
                     # logger.debug('\n'+ str(piece_possible_actions))
                     # TODO: add knight actions
@@ -295,8 +289,8 @@ class MiniShogiGameState:
 
                                         if clear:
                                             next_state = copy.deepcopy(self)
-                                            logger.debug('QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
-                                                self.board[y][x], x, y, new_x, new_y))
+                                            #logger.debug('QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
+                                            #    self.board[y][x], x, y, new_x, new_y))
 
                                             if self.board[new_y][new_x] != '.' and self.board[new_y][new_x] != 'k':
                                                 next_state.hand1.append(
@@ -310,9 +304,9 @@ class MiniShogiGameState:
                                             if (
                                                     new_y < MiniShogiGame.PROMOTION_ZONE_SIZE or y < MiniShogiGame.PROMOTION_ZONE_SIZE):
                                                 if not MiniShogiGame.is_promoted(self.board[y][x]):
-                                                    logger.debug(
-                                                        'PROMOTION QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
-                                                            self.board[y][x], x, y, new_x, new_y))
+                                                    #logger.debug(
+                                                    #    'PROMOTION QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
+                                                    #        self.board[y][x], x, y, new_x, new_y))
                                                     next_state = copy.deepcopy(self)
 
                                                     if self.board[new_y][new_x] != '.' and self.board[new_y][
@@ -332,8 +326,8 @@ class MiniShogiGameState:
                             if (MiniShogiGame.HAND_ORDER[dropcount] != 'P') or (
                                     y != 0 and self.board[y - 1][x] != 'k' and (
                                     'P' not in (row[x] for row in self.board))):
-                                logger.debug(
-                                    'DROP: {0} to ({1}, {2})'.format(MiniShogiGame.HAND_ORDER[dropcount], x, y))
+                                #logger.debug(
+                                #    'DROP: {0} to ({1}, {2})'.format(MiniShogiGame.HAND_ORDER[dropcount], x, y))
                                 piece = MiniShogiGame.HAND_ORDER[dropcount]
                                 next_state = copy.deepcopy(self)
                                 next_state.board[y][x] = piece
@@ -342,9 +336,8 @@ class MiniShogiGameState:
                                 allowed_states.append(next_state)
         return allowed_states
 
-    
     @staticmethod
-    def action_matrix_to_action_array(state, matrix):
+    def action_matrix_to_action_array(matrix):
         array = []
         for x in range(0, MiniShogiGame.BOARD_X):
             for y in range(0, MiniShogiGame.BOARD_Y):
@@ -353,7 +346,6 @@ class MiniShogiGameState:
                         array.append((z, y, x))
         return array
 
-    
     @staticmethod
     def action_matrix_to_state_array(state, matrix):
         array = []
@@ -394,24 +386,19 @@ class MiniShogiGameState:
             piece_index = z - MiniShogiGame.QUEEN_ACTIONS - MiniShogiGame.KNIGHT_ACTIONS - MiniShogiGame.PR_KNIGHT_ACTIONS - MiniShogiGame.PR_QUEEN_ACTIONS
             piece = MiniShogiGame.HAND_ORDER[piece_index]
             next_state.board[y][x] = piece
-            # logger.debug('piece = ' + next_state.board[y][x])
-            # logger.debug(next_state.hand1)
             next_state.hand1.remove(piece)
         next_state.flip()
-        # logger.debug('\n' + str(self.board).replace('], ', ']\n'))
         tmp = next_state.hand1
         next_state.hand1 = next_state.hand2
         next_state.hand2 = tmp
         next_state.colour = 'W' if (next_state.colour == 'B') else 'B'
         next_state.move_count += 1
-        # self.stack = MiniShogiGameState.board_to_plane_stack(
-        #    board, hand1, hand2, repetitions, colour, move_count)
         return next_state
 
     def game_ended(self):
-        # return not ((np.any(self.stack[MiniShogiGame.ORDER.index("K")])) and (np.any(self.stack[MiniShogiGame.ORDER.index('k')])))
         return not (any('K' in sublist for sublist in self.board) and any('k' in sublist for sublist in self.board))
 
+    """
     @staticmethod
     def board_to_plane_stack(board, hand1, hand2, repetitions, colour, move_count):
         stack = np.zeros((MiniShogiGame.STATE_STACK_HEIGHT, MiniShogiGame.BOARD_Y, MiniShogiGame.BOARD_X), dtype=int)
@@ -435,6 +422,32 @@ class MiniShogiGameState:
         stack[len(MiniShogiGame.ORDER) + (2 * len(MiniShogiGame.HAND_ORDER)) +
               MiniShogiGame.ALLOWED_REPEATS + 1] = np.ones((MiniShogiGame.BOARD_X, MiniShogiGame.BOARD_Y),
                                                            dtype=int) * move_count
+        return stack
+    """
+
+    @staticmethod
+    def state_to_plane_stack(state):
+        stack = np.zeros((MiniShogiGame.STATE_STACK_HEIGHT, MiniShogiGame.BOARD_Y, MiniShogiGame.BOARD_X), dtype=int)
+        for y in range(0, len(state.board)):
+            for x in range(0, len(state.board[0])):
+                if state.board[y][x] != '.':
+                    stack[MiniShogiGame.ORDER.index(state.board[y][x])][y][x] = 1
+        for i in range(0, len(state.hand1)):
+            stack[len(MiniShogiGame.ORDER) +
+                  MiniShogiGame.HAND_ORDER.index(state.hand1[i].upper())] += 1
+        for i in range(0, len(state.hand2)):
+            stack[len(MiniShogiGame.ORDER) + len(MiniShogiGame.HAND_ORDER) +
+                  MiniShogiGame.HAND_ORDER.index(state.hand2[i].upper())] += 1
+        for i in range(0, state.repetitions):
+            stack[len(MiniShogiGame.ORDER) + (2 * len(MiniShogiGame.HAND_ORDER)) +
+                  i] = np.ones((MiniShogiGame.BOARD_X, MiniShogiGame.BOARD_Y), dtype=int)
+        stack[len(MiniShogiGame.ORDER) + (2 * len(MiniShogiGame.HAND_ORDER)) +
+              MiniShogiGame.ALLOWED_REPEATS] = (
+            np.ones((MiniShogiGame.BOARD_X, MiniShogiGame.BOARD_Y), dtype=int) if state.colour == 'W' else np.ones(
+                (MiniShogiGame.BOARD_X, MiniShogiGame.BOARD_Y), dtype=int) * -1)
+        stack[len(MiniShogiGame.ORDER) + (2 * len(MiniShogiGame.HAND_ORDER)) +
+              MiniShogiGame.ALLOWED_REPEATS + 1] = np.ones((MiniShogiGame.BOARD_X, MiniShogiGame.BOARD_Y),
+                                                           dtype=int) * state.move_count
         return stack
 
     """
@@ -489,24 +502,16 @@ class MiniShogiGameState:
         return '\n{0}--{1}--\n{0}{2}\n{0}Hand1: {3}\n{0}Hand2: {4}\n{0}Colour: {5}'.format(margin, self.move_count, str(
             state_copy.board).replace('], ', ']\n' + margin), self.hand1, self.hand2, self.colour)
 
-        # return '\n--'+ str(self.move_count) +'--\n' + str(self.board).replace('], ', ']\n')+'\nHand1: ' + str(self.hand1) + '\nHand2: ' + str(self.hand2) + '\nColour: ' + str(self.colour)
-
     def __hash__(self):
-        return hash(str(self.board_to_plane_stack(self.board, self.hand1, self.hand2, self.repetitions, self.colour,
-                                                  self.move_count)))
+        return hash((self.state_to_plane_stack(self)).tostring())
 
     def compare_boards(self, other):
         return self.board == other.board and Counter(self.hand1) == Counter(other.hand1) and Counter(
             self.hand2) == Counter(other.hand2) and self.colour == other.colour
-        # TODO: test?
 
     def __eq__(self, other):
-        return hash(str(self.board_to_plane_stack(self.board, self.hand1, self.hand2, self.repetitions, self.colour,
-                                                  self.move_count))) == hash(str(
-            self.board_to_plane_stack(other.board, other.hand1, other.hand2, other.repetitions, other.colour,
-                                      other.move_count)))
-
-    # return hash(str(MiniShogiGameState.board_to_plane_stack(self.board, self.hand1, self.hand2, self.repetitions, self.colour, self.move_count)) == hash(str(MiniShogiGameState.board_to_plane_stack(other.board, other.hand1, other.hand2, other.repetitions, other.colour, other.move_count))))
+        return hash((self.state_to_plane_stack(self)).tostring()) == hash((
+            self.state_to_plane_stack(other)).tostring())
 
     def __ne__(self, other):
         return not (self == other)

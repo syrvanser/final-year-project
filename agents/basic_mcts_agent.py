@@ -1,8 +1,8 @@
 import logging
 import time
 
-from agents.agent import Agent
-from mcts.basic_mcts import BasicMCTS
+from agents import Agent
+from mcts import BasicMCTS
 
 logger = logging.getLogger(__name__)
 

@@ -1,7 +1,7 @@
 import logging
 from math import log, sqrt
 from random import choice
-from mcts.mcts import MCTS
+from mcts import MCTS
 
 logger = logging.getLogger(__name__)
 

@@ -20,4 +20,6 @@ logging.basicConfig(format=' %(asctime)s %(name)-30s %(levelname)-8s %(message)s
 np.set_printoptions(threshold=np.nan)
 
 examples = load_examples()
-logger.info(examples)
+input_states, target_pis, target_vs = list(zip(*examples))
+logger.info(len(examples))
+logger.info(target_vs)
