@@ -2,7 +2,7 @@ from keras.models import *
 from keras.layers import *
 from keras.optimizers import *
 
-from games.mini_shogi_game import MiniShogiGame
+from games import MiniShogiGame
 
 
 class MiniShogiNNet:

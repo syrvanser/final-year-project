@@ -1,8 +1,8 @@
 import logging
 import re
 
-from agents.agent import Agent
-from games.mini_shogi_game import MiniShogiGame
+from agents import Agent
+from games import MiniShogiGame
 
 logger = logging.getLogger(__name__)
 
