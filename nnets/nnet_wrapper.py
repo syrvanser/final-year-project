@@ -3,7 +3,9 @@ import os
 import time
 
 import numpy as np
+from keras.callbacks import TensorBoard
 
+import config
 from games import MiniShogiGame, MiniShogiGameState
 from nnets import MiniShogiNNet
 
@@ -11,9 +13,10 @@ logger = logging.getLogger(__name__)
 
 
 class MiniShogiNNetWrapper:
-    def __init__(self, args):
-        self.nnet = MiniShogiNNet(args)
-        self.args = args
+    def __init__(self):
+        self.nnet = MiniShogiNNet()
+        self.args = config.args
+        self.tensorboard = TensorBoard(log_dir="logs/{}".format(time.time()))
 
     def train(self, examples):
         """
@@ -29,7 +32,7 @@ class MiniShogiNNetWrapper:
                                              MiniShogiGame.BOARD_X))
         target_vs = np.asarray(target_vs)
         self.nnet.model.fit(x=input_states, y=[target_pis, target_vs], batch_size=self.args.batch_size,
-                            epochs=self.args.epochs)
+                            epochs=self.args.epochs, callbacks=[self.tensorboard])
 
     def predict(self, state):
         #start = time.time()

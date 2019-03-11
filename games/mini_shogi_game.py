@@ -172,6 +172,7 @@ class MiniShogiGameState:
         self.repetitions = repetitions
         self.colour = colour
         self.move_count = move_count
+        self.hash = hash((self.state_to_plane_stack(self)).tostring())
 
     @classmethod
     def from_plane_stack(cls, stack):
@@ -188,6 +189,7 @@ class MiniShogiGameState:
         self.hand2 = tmp
         self.colour = 'W' if (self.colour == 'B') else 'B'
         self.move_count += 1
+        self.hash = hash((self.state_to_plane_stack(self)).tostring())
 
     def flip(self):
         newboard = [x[:] for x in self.board]
@@ -200,6 +202,7 @@ class MiniShogiGameState:
                     self.board[y][x] = self.board[y][x].lower()
                 newboard[MiniShogiGame.BOARD_Y - y - 1][MiniShogiGame.BOARD_X - x - 1] = self.board[y][x]
         self.board = newboard
+        self.hash = hash((self.state_to_plane_stack(self)).tostring())
 
     def allowed_actions_matrix(self):
         actions = np.zeros((MiniShogiGame.ACTION_STACK_HEIGHT, MiniShogiGame.BOARD_Y, MiniShogiGame.BOARD_X), dtype=int)
@@ -393,6 +396,7 @@ class MiniShogiGameState:
         next_state.hand2 = tmp
         next_state.colour = 'W' if (next_state.colour == 'B') else 'B'
         next_state.move_count += 1
+        next_state.hash = hash((next_state.state_to_plane_stack(next_state)).tostring())
         return next_state
 
     def game_ended(self):
@@ -503,15 +507,14 @@ class MiniShogiGameState:
             state_copy.board).replace('], ', ']\n' + margin), self.hand1, self.hand2, self.colour)
 
     def __hash__(self):
-        return hash((self.state_to_plane_stack(self)).tostring())
+        return self.hash
 
     def compare_boards(self, other):
         return self.board == other.board and Counter(self.hand1) == Counter(other.hand1) and Counter(
             self.hand2) == Counter(other.hand2) and self.colour == other.colour
 
     def __eq__(self, other):
-        return hash((self.state_to_plane_stack(self)).tostring()) == hash((
-            self.state_to_plane_stack(other)).tostring())
+        return self.hash == other.hash
 
     def __ne__(self, other):
         return not (self == other)

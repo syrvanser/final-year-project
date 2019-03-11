@@ -4,6 +4,7 @@ from math import sqrt
 
 import numpy as np
 
+import config
 from games import MiniShogiGame, MiniShogiGameState
 from mcts import MCTS
 
@@ -13,16 +14,16 @@ EPS = 1e-8
 
 class NNetMCTS(MCTS):
 
-    def __init__(self, nnet, args):  # args = numMCTSSims
+    def __init__(self, nnet):  # args = numMCTSSims
         self.nnet = nnet
-        self.c_puct = args.c_puct
+        self.c_puct = config.args.c_puct
         self.n_sa = {}  # how many times a has been taken from state s
         self.q_sa = {}  # q value for taking a in state s
         self.p_s = {}  # matrix list with action probs
         self.n_s = {}  # how many times s has been visited
         #self.action_matrices = {}   # dict with action matrices
         self.action_arrays = {}
-        self.max_depth = args.max_depth
+        self.max_depth = config.args.max_depth
 
     def get_action_probs(self, state):
         action_pool = self.action_arrays[state]
@@ -37,12 +38,12 @@ class NNetMCTS(MCTS):
         v = 0
 
         for i in range(self.max_depth):
-            #logger.debug('\t\t\tMCTS Depth level: #{0}'.format(i))
+            logger.debug('\t\t\tMCTS Depth level: #{0}'.format(i))
             current_state = last_state
-            #logger.debug(current_state.print_state(i))
+            logger.debug(current_state.print_state(i))
 
             if current_state.game_ended():
-                #logger.debug('Found terminal node!')
+                logger.debug('Found terminal node!')
                 v = -1
                 break
 
@@ -78,9 +79,9 @@ class NNetMCTS(MCTS):
                            if (current_state, a) in self.q_sa
                            else self.c_puct * self.p_s[current_state][a] * math.sqrt(self.n_s[current_state] + EPS))))
 
-            #logger.debug('Selecting action with q={0} n={1} p={2}'.format(
-            #    self.q_sa.get((current_state, next_action), 'n/a'), self.n_sa.get((current_state, next_action), 'n/a'),
-            #    self.p_s[current_state][next_action]))
+            logger.debug('Selecting action with q={0} n={1} p={2}'.format(
+                self.q_sa.get((current_state, next_action), 'n/a'), self.n_sa.get((current_state, next_action), 'n/a'),
+                self.p_s[current_state][next_action]))
 
             next_state = MiniShogiGameState.action_to_state(current_state, next_action)
             last_state = next_state

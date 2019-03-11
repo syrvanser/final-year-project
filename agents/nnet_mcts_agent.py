@@ -8,6 +8,7 @@ from pickle import Pickler, Unpickler
 
 import numpy as np
 
+import config
 from agents import Agent
 from games import MiniShogiGame, MiniShogiGameState
 from mcts import NNetMCTS
@@ -17,13 +18,13 @@ logger = logging.getLogger(__name__)
 
 
 class NNetMCTSAgent(Agent):
-    def __init__(self, nnet, args):
+    def __init__(self, nnet):
 
         super().__init__()
-        self.args = args
+        self.args = config.args
         self.skip_first_self_play = False
         self.nnet = nnet
-        self.MCTS = NNetMCTS(nnet=self.nnet, args=self.args)
+        self.MCTS = NNetMCTS(nnet=self.nnet)
         self.example_history = []
 
     def act(self, game):
@@ -76,8 +77,8 @@ class NNetMCTSAgent(Agent):
                 # collect examples from this game
 
                 for e in range(self.args.max_example_games):
-                    logger.info('Example {0}/{1}'.format(e, self.args.max_example_games))
-                    self.MCTS = NNetMCTS(nnet=self.nnet, args=self.args)
+                    logger.info('Example {0}/{1}'.format(e+1, self.args.max_example_games))
+                    self.MCTS = NNetMCTS(nnet=self.nnet)
                     # collect examples from this game
                     iteration_examples += self.run_single_game()
 
@@ -92,11 +93,10 @@ class NNetMCTSAgent(Agent):
             for e in self.example_history:
                 train_examples.extend(e)
             random.shuffle(train_examples)
-
             logger.info('Starting training...')
 
             self.nnet.save_checkpoint(filename='temp.data')
-            new_nnet = MiniShogiNNetWrapper(self.args)
+            new_nnet = MiniShogiNNetWrapper()
             new_nnet.load_checkpoint(filename='temp.data')
             new_nnet.train(train_examples)
 
@@ -123,8 +123,8 @@ class NNetMCTSAgent(Agent):
         for i in range(1, self.args.compare_rounds + 1):
             g = MiniShogiGame()
             x = random.randint(0, 1)
-            agent1 = self if x == 0 else NNetMCTSAgent(new_nnet, self.args)
-            agent2 = self if x == 1 else NNetMCTSAgent(new_nnet, self.args)
+            agent1 = self if x == 0 else NNetMCTSAgent(new_nnet)
+            agent2 = self if x == 1 else NNetMCTSAgent(new_nnet)
             begin = time.time()
             while True:
                 current_agent = agent1 if g.game_state.colour == 'W' else agent2
@@ -143,6 +143,7 @@ class NNetMCTSAgent(Agent):
 
                 if g.game_state.move_count > self.args.move_count_limit:
                     logger.warning('Game too long, terminating')
+                    break
 
         return old_agent_wins / non_draw_rounds, new_agent_wins / non_draw_rounds
 

@@ -2,12 +2,13 @@ from keras.models import *
 from keras.layers import *
 from keras.optimizers import *
 
+import config
 from games import MiniShogiGame
 
 
 class MiniShogiNNet:
-    def __init__(self, args):
-        self.args = args
+    def __init__(self):
+        args = config.args
 
         # Neural Net
         self.input_shape = (

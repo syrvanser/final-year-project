@@ -1,20 +1,113 @@
- 03/10/2019 01:17:52 AM: agents.nnet_mcts_agent         INFO     Loading previous examples and model
- 03/10/2019 01:17:53 AM: agents.nnet_mcts_agent         INFO     Examples loaded, skipping first self play
- 03/10/2019 01:17:53 AM: agents.nnet_mcts_agent         INFO     Generating examples
- 03/10/2019 01:17:53 AM: agents.nnet_mcts_agent         INFO     Example generation finished, starting training...
- 03/10/2019 01:18:30 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 0 (0.0%), new_nnet win 1 (100.0%)| time: 26.723660945892334
- 03/10/2019 01:19:00 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 0 (0.0%), new_nnet win 2 (100.0%)| time: 29.85513210296631
- 03/10/2019 01:19:14 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 0 (0.0%), new_nnet win 3 (100.0%)| time: 14.113250732421875
- 03/10/2019 01:21:49 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 0 (0.0%), new_nnet win 4 (100.0%)| time: 154.9819757938385
- 03/10/2019 01:22:20 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 0 (0.0%), new_nnet win 5 (100.0%)| time: 31.24840784072876
- 03/10/2019 01:24:46 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 0 (0.0%), new_nnet win 6 (100.0%)| time: 145.4733498096466
- 03/10/2019 01:25:17 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 1 (14.285714285714285%), new_nnet win 6 (85.71428571428571%)| time: 31.108813285827637
- 03/10/2019 01:27:28 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 1 (12.5%), new_nnet win 7 (87.5%)| time: 130.8559935092926
- 03/10/2019 01:28:00 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 2 (22.22222222222222%), new_nnet win 7 (77.77777777777779%)| time: 32.765381813049316
- 03/10/2019 01:28:46 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 2 (20.0%), new_nnet win 8 (80.0%)| time: 45.82740664482117
- 03/10/2019 01:30:58 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 2 (18.181818181818183%), new_nnet win 9 (81.81818181818183%)| time: 131.9975025653839
- 03/10/2019 01:31:17 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 3 (25.0%), new_nnet win 9 (75.0%)| time: 18.234220266342163
- 03/10/2019 01:32:06 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 3 (23.076923076923077%), new_nnet win 10 (76.92307692307693%)| time: 49.11062479019165
- 03/10/2019 01:32:18 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 4 (28.57142857142857%), new_nnet win 10 (71.42857142857143%)| time: 12.118576049804688
- 03/10/2019 01:33:12 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 4 (26.666666666666668%), new_nnet win 11 (73.33333333333333%)| time: 54.264795541763306
- 03/10/2019 01:33:35 AM: agents.nnet_mcts_agent         INFO     Stats: old_nnet win 4 (25.0%), new_nnet win 12 (75.0%)| time: 22.819498300552368
+ 03/11/2019 11:34:12 AM: matplotlib                     DEBUG    CACHEDIR=C:\Users\syrvanser\.matplotlib
+ 03/11/2019 11:34:12 AM: matplotlib.font_manager        DEBUG    Using fontManager instance from C:\Users\syrvanser\.matplotlib\fontlist-v300.json
+ 03/11/2019 11:34:12 AM: matplotlib.pyplot              DEBUG    Loaded backend qt5agg version unknown.
+ 03/11/2019 11:34:12 AM: matplotlib.pyplot              DEBUG    Loaded backend Qt5Agg version unknown.
+ 03/11/2019 11:34:12 AM: matplotlib.pyplot              DEBUG    Loaded backend qt5agg version unknown.
+ 03/11/2019 11:34:26 AM: agents.random_agent            DEBUG    [(0, 3, 0), (5, 4, 0), (0, 4, 1), (5, 4, 1), (0, 4, 2), (5, 4, 2), (35, 4, 2), (5, 4, 3), (35, 4, 3), (36, 4, 3), (37, 4, 3), (0, 4, 4), (1, 4, 4), (2, 4, 4)]
+ 03/11/2019 11:34:29 AM: __main__                       INFO     
+--1--
+[['r', 'b', 's', 'g', 'k']
+['.', '.', '.', '.', 'p']
+['.', '.', '.', '.', '.']
+['P', 'G', '.', '.', '.']
+['K', '.', 'S', 'B', 'R']]
+Hand1: []
+Hand2: []
+Colour: B
+ 03/11/2019 11:35:13 AM: agents.nnet_mcts_agent         DEBUG    Playout: #0
+ 03/11/2019 11:35:44 AM: mcts.nnet_mcts                 DEBUG    			MCTS Depth level: #0
+ 03/11/2019 11:36:12 AM: mcts.nnet_mcts                 DEBUG    
+--1--
+[['r', 'b', 's', '.', 'k']
+['.', '.', '.', 'g', 'p']
+['.', '.', '.', '.', '.']
+['P', '.', '.', '.', '.']
+['K', 'G', 'S', 'B', 'R']]
+Hand1: []
+Hand2: []
+Colour: B
+ 03/11/2019 11:42:21 AM: agents.nnet_mcts_agent         DEBUG    Playout: #1
+ 03/11/2019 11:43:05 AM: mcts.nnet_mcts                 DEBUG    			MCTS Depth level: #0
+ 03/11/2019 11:43:08 AM: mcts.nnet_mcts                 DEBUG    
+--1--
+[['r', 'b', 's', '.', 'k']
+['.', '.', '.', 'g', 'p']
+['.', '.', '.', '.', '.']
+['P', '.', '.', '.', '.']
+['K', 'G', 'S', 'B', 'R']]
+Hand1: []
+Hand2: []
+Colour: B
+ 03/11/2019 11:43:28 AM: mcts.nnet_mcts                 DEBUG    Selecting action with q=n/a n=n/a p=0.07199538289142957
+ 03/11/2019 11:44:00 AM: mcts.nnet_mcts                 DEBUG    			MCTS Depth level: #1
+ 03/11/2019 11:44:00 AM: mcts.nnet_mcts                 DEBUG    
+	--2--
+	[['.', 'b', 's', 'g', 'k']
+	['r', '.', '.', '.', 'p']
+	['.', '.', '.', '.', '.']
+	['P', 'G', '.', '.', '.']
+	['K', '.', 'S', 'B', 'R']]
+	Hand1: []
+	Hand2: []
+	Colour: W
+ 03/11/2019 11:46:19 AM: agents.nnet_mcts_agent         DEBUG    Playout: #2
+ 03/11/2019 11:46:26 AM: mcts.nnet_mcts                 DEBUG    			MCTS Depth level: #0
+ 03/11/2019 11:46:27 AM: mcts.nnet_mcts                 DEBUG    
+--1--
+[['r', 'b', 's', '.', 'k']
+['.', '.', '.', 'g', 'p']
+['.', '.', '.', '.', '.']
+['P', '.', '.', '.', '.']
+['K', 'G', 'S', 'B', 'R']]
+Hand1: []
+Hand2: []
+Colour: B
+ 03/11/2019 11:46:30 AM: mcts.nnet_mcts                 DEBUG    Selecting action with q=n/a n=n/a p=0.07194154106887946
+ 03/11/2019 11:46:35 AM: mcts.nnet_mcts                 DEBUG    			MCTS Depth level: #1
+ 03/11/2019 11:46:36 AM: mcts.nnet_mcts                 DEBUG    
+	--2--
+	[['r', '.', 's', 'g', 'k']
+	['.', '.', '.', '.', 'p']
+	['.', '.', '.', '.', '.']
+	['P', 'G', '.', '.', 'b']
+	['K', '.', 'S', 'B', 'R']]
+	Hand1: []
+	Hand2: []
+	Colour: W
+ 03/11/2019 11:47:34 AM: agents.nnet_mcts_agent         DEBUG    Playout: #3
+ 03/11/2019 11:47:40 AM: mcts.nnet_mcts                 DEBUG    			MCTS Depth level: #0
+ 03/11/2019 11:47:41 AM: mcts.nnet_mcts                 DEBUG    
+--1--
+[['r', 'b', 's', '.', 'k']
+['.', '.', '.', 'g', 'p']
+['.', '.', '.', '.', '.']
+['P', '.', '.', '.', '.']
+['K', 'G', 'S', 'B', 'R']]
+Hand1: []
+Hand2: []
+Colour: B
+ 03/11/2019 11:48:45 AM: mcts.nnet_mcts                 DEBUG    Selecting action with q=n/a n=n/a p=0.07180709554644016
+ 03/11/2019 11:51:09 AM: mcts.nnet_mcts                 DEBUG    			MCTS Depth level: #1
+ 03/11/2019 11:51:09 AM: mcts.nnet_mcts                 DEBUG    
+	--2--
+	[['r', 'b', '.', 'g', 'k']
+	['.', '.', '.', 's', 'p']
+	['.', '.', '.', '.', '.']
+	['P', 'G', '.', '.', '.']
+	['K', '.', 'S', 'B', 'R']]
+	Hand1: []
+	Hand2: []
+	Colour: W
+ 03/11/2019 11:51:33 AM: agents.nnet_mcts_agent         DEBUG    Playout: #4
+ 03/11/2019 11:51:35 AM: mcts.nnet_mcts                 DEBUG    			MCTS Depth level: #0
+ 03/11/2019 11:51:36 AM: mcts.nnet_mcts                 DEBUG    
+--1--
+[['r', 'b', 's', '.', 'k']
+['.', '.', '.', 'g', 'p']
+['.', '.', '.', '.', '.']
+['P', '.', '.', '.', '.']
+['K', 'G', 'S', 'B', 'R']]
+Hand1: []
+Hand2: []
+Colour: B
+ 03/11/2019 11:51:40 AM: mcts.nnet_mcts                 DEBUG    Selecting action with q=n/a n=n/a p=0.07164230104788344

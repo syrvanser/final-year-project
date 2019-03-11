@@ -38,8 +38,7 @@ class BasicMCTS(MCTS):
                 log_total = log(
                     sum(self.n[s] for s in states_pool))
 
-                next_state = max(states_pool, key=(lambda s: (
-                                                                     self.q[s] / self.n[s]) + self.c_puct * sqrt(
+                next_state = max(states_pool, key=(lambda s: (self.q[s] / self.n[s]) + self.c_puct * sqrt(
                     log_total / self.n[s])))
                 logger.info('Selecting action with q={0} n={1}'.format(
                     self.q[next_state], self.n[next_state]))
