@@ -4,8 +4,6 @@ import re
 from agents import Agent
 from games import MiniShogiGame
 
-logger = logging.getLogger(__name__)
-
 
 class HumanShogiAgent(Agent):
     def __init__(self):

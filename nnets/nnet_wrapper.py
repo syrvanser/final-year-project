@@ -9,8 +9,6 @@ import config
 from games import MiniShogiGame, MiniShogiGameState
 from nnets import MiniShogiNNet
 
-logger = logging.getLogger(__name__)
-
 
 class MiniShogiNNetWrapper:
     def __init__(self):
@@ -45,7 +43,7 @@ class MiniShogiNNetWrapper:
 
         pi = np.reshape(pi, (-1, MiniShogiGame.ACTION_STACK_HEIGHT, MiniShogiGame.BOARD_Y, MiniShogiGame.BOARD_X))
 
-        #logger.debug('Prediction time : {0:03f}'.format(time.time() - start))
+        #logging.debug('Prediction time : {0:03f}'.format(time.time() - start))
         return pi[0], v[0][0]
 
     def save_checkpoint(self, folder='checkpoints', filename='weight_checkpoint.data'):

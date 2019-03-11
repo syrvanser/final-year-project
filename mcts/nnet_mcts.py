@@ -8,7 +8,6 @@ import config
 from games import MiniShogiGame, MiniShogiGameState
 from mcts import MCTS
 
-logger = logging.getLogger(__name__)
 EPS = 1e-8
 
 
@@ -38,12 +37,12 @@ class NNetMCTS(MCTS):
         v = 0
 
         for i in range(self.max_depth):
-            logger.debug('\t\t\tMCTS Depth level: #{0}'.format(i))
+            #logging.debug('\t\t\tMCTS Depth level: #{0}'.format(i))
             current_state = last_state
-            logger.debug(current_state.print_state(i))
+            #logging.debug(current_state.print_state(i))
 
             if current_state.game_ended():
-                logger.debug('Found terminal node!')
+                #logging.debug('Found terminal node!')
                 v = -1
                 break
 
@@ -61,7 +60,7 @@ class NNetMCTS(MCTS):
 
                 else:
                     # if all valid moves were masked make all valid moves equally probable
-                    logger.warning(
+                    logging.warning(
                         'All valid moves were masked, making all equally probable')
                     self.p_s[current_state] = valid_moves
                     # renormilise
@@ -79,9 +78,9 @@ class NNetMCTS(MCTS):
                            if (current_state, a) in self.q_sa
                            else self.c_puct * self.p_s[current_state][a] * math.sqrt(self.n_s[current_state] + EPS))))
 
-            logger.debug('Selecting action with q={0} n={1} p={2}'.format(
+            '''logging.debug('Selecting action with q={0} n={1} p={2}'.format(
                 self.q_sa.get((current_state, next_action), 'n/a'), self.n_sa.get((current_state, next_action), 'n/a'),
-                self.p_s[current_state][next_action]))
+                self.p_s[current_state][next_action]))'''
 
             next_state = MiniShogiGameState.action_to_state(current_state, next_action)
             last_state = next_state
@@ -89,12 +88,12 @@ class NNetMCTS(MCTS):
 
         for (parent, action) in reversed(action_history):
             if (parent, action) not in self.q_sa:
-                self.q_sa[(parent, action)] = v
+                self.q_sa[(parent, action)] = -v  #v is value of next state, hence using -v for this
                 v = -v
                 self.n_sa[(parent, action)] = 1
             else:
                 self.q_sa[(parent, action)] = (self.n_sa[(parent, action)] *
-                                               self.q_sa[(parent, action)] + v) / (self.n_sa[(parent, action)] + 1)
+                                               self.q_sa[(parent, action)] + (-v)) / (self.n_sa[(parent, action)] + 1)
                 v = -v
                 self.n_sa[(parent, action)] += 1
             self.n_s[parent] += 1

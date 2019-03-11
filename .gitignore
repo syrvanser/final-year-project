@@ -4,5 +4,5 @@ __pycache__/
 .idea/
 final-year-project.code-workspace
 checkpoints/
-*.log
+logs/
 profiling_results

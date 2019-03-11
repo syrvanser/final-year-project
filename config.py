@@ -9,7 +9,7 @@ args = DotDict({
     'filter_size': 3,
     'mcts_iterations': 50,  # num of mcts sims
     'max_depth': 200,
-    'max_example_games': 10,
+    'max_example_games': 50,
     'num_epochs': 100,
     'c_puct': 1,
     'max_examples_len': 100000,  # train examples

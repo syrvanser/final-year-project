@@ -4,8 +4,6 @@ import time
 from agents import Agent
 from mcts import BasicMCTS
 
-logger = logging.getLogger(__name__)
-
 
 class BasicMCTSAgent(Agent):
     def __init__(self, limit, max_depth, use_timer=False):
@@ -21,22 +19,22 @@ class BasicMCTSAgent(Agent):
             begin = time.time()
             games = 0
             while time.time() - begin < self.limit:
-                logger.debug('Depth: #{0}'.format(games))
+                logging.debug('Depth: #{0}'.format(games))
                 self.MCTS.search(game)
                 games += 1
         else:
             for i in range(self.limit):
-                logger.debug('Playout: #{0}'.format(i))
+                logging.debug('Playout: #{0}'.format(i))
                 self.MCTS.search(game)
 
         # action_pool = Game.action_matrix_to_array(game.game_state.allowed_actions())
         # states_pool = [Game.next_state(game.game_state, action) for action in action_pool]
-        # self.logger.debug('action pool size: ' + str(len(action_pool)))
+        # logging.debug('action pool size: ' + str(len(action_pool)))
         states_pool = game.game_state.next_states_array()
 
         # for i in range(0, len(action_pool)):
-        # self.logger.debug(str(action_pool[i]) + ' Percentage: ' +  str(self.MCTS.q.get(states_pool[i], 0) / self.MCTS.n.get((states_pool[i]), 1)))
-        # logger.debug(action_pool)
+        # logging.debug(str(action_pool[i]) + ' Percentage: ' +  str(self.MCTS.q.get(states_pool[i], 0) / self.MCTS.n.get((states_pool[i]), 1)))
+        # logging.debug(action_pool)
 
         next_state = max(states_pool, key=(lambda s: self.MCTS.q.get(
             s, 0) / self.MCTS.n.get(s, 1)))  # select state with max q/n ratio

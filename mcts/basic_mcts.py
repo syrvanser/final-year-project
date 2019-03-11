@@ -3,8 +3,6 @@ from math import log, sqrt
 from random import choice
 from mcts import MCTS
 
-logger = logging.getLogger(__name__)
-
 
 class BasicMCTS(MCTS):
 
@@ -20,9 +18,9 @@ class BasicMCTS(MCTS):
         states_history_copy = game.state_history[:]
         expand = True
         for i in range(self.max_depth):
-            logger.debug('Depth level: #{0}'.format(i))
+            logging.debug('Depth level: #{0}'.format(i))
             current_state = states_history_copy[-1]
-            logger.debug(current_state.print_state(i))
+            logging.debug(current_state.print_state(i))
 
             # actions = current_state.allowed_actions()
             # action_pool = Game.action_matrix_to_array(actions)
@@ -31,7 +29,7 @@ class BasicMCTS(MCTS):
             states_pool = current_state.next_states_array()
             # print('{0} {1}'.format(len(states_pool), len(states_pool2)))
             explored = sum(el in self.n for el in states_pool)
-            logger.debug(
+            logging.debug(
                 'Actions explored: {0}/{1}'.format(explored, len(states_pool)))
 
             if all(self.n.get(s) for s in states_pool):
@@ -40,10 +38,10 @@ class BasicMCTS(MCTS):
 
                 next_state = max(states_pool, key=(lambda s: (self.q[s] / self.n[s]) + self.c_puct * sqrt(
                     log_total / self.n[s])))
-                logger.info('Selecting action with q={0} n={1}'.format(
+                logging.info('Selecting action with q={0} n={1}'.format(
                     self.q[next_state], self.n[next_state]))
             else:
-                logger.info('Not enough data, choosing at random!')
+                logging.info('Not enough data, choosing at random!')
                 next_state = choice(states_pool)
 
             # action = choice(action_pool)
@@ -59,7 +57,7 @@ class BasicMCTS(MCTS):
             visited_states.add(next_state)
 
             if next_state.game_ended():
-                logger.debug('Found terminal node!')
+                logging.debug('Found terminal node!')
                 break
 
         for state in visited_states:
