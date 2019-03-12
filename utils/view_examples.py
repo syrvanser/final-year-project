@@ -19,6 +19,6 @@ np.set_printoptions(threshold=np.nan)
 
 logging.info('Logging examples0.data:')
 examples = load_examples()
-input_states, target_pis, target_vs = list(zip(*examples))
-logging.info(len(examples))
+input_states, target_pis, target_vs = list(zip(*examples[0]))
+logging.info(target_pis)
 logging.info(target_vs)

@@ -25,17 +25,20 @@ class NNetMCTSAgent(Agent):
         self.MCTS = NNetMCTS(nnet=self.nnet)
         self.example_history = []
 
-    def act(self, game):
+    def act(self, game, tau=1):
 
         for i in range(self.args.mcts_iterations):
             #logging.debug('Playout: #{0}'.format(i))
             self.MCTS.search(game)
 
-        action_tuple = (MiniShogiGameState.state_to_plane_stack(game.game_state), self.MCTS.p_s[game.game_state], None,
+        action_pool = self.MCTS.action_arrays[game.game_state]
+        pi_list = self.MCTS.get_action_probs(game.game_state, tau=tau)  #list
+        pi_matrix = MiniShogiGameState.prob_list_to_matrix(pi_list, action_pool)
+
+        action_tuple = (MiniShogiGameState.state_to_plane_stack(game.game_state), pi_matrix, None,
                         game.game_state.colour)
 
-        action_pool = self.MCTS.action_arrays[game.game_state]
-        next_action = action_pool[np.random.choice(len(action_pool), p=self.MCTS.get_action_probs(game.game_state))]
+        next_action = action_pool[np.random.choice(len(action_pool), p=pi_list)]
 
         game.take_action(next_action)
 
@@ -45,10 +48,11 @@ class NNetMCTSAgent(Agent):
         iteration_examples = []
         game = MiniShogiGame()
 
-        while True:  # set max game duration?
+        while True:
             # logging.debug('\tStep: #{0}'.format(game.game_state.move_count))
             # logging.info(game.game_state.print_state(0, flip=game.game_state.colour == 'B'))
-            action = self.act(game)
+            tau = int(game.game_state.move_count < self.args.tau)
+            action = self.act(game, tau)
             iteration_examples.append(action)
             if game.game_state.game_ended():
                 break
@@ -62,8 +66,8 @@ class NNetMCTSAgent(Agent):
 
         logging.info('Loading previous examples and model')
         try:
-            self.nnet.load_checkpoint(filename='temp.data')
-            self.load_examples(filename='examples{0}.data'.format(self.args.example_iter_number))
+            self.load_examples(filename='examples_last.data')
+            self.nnet.load_checkpoint(filename='best.h5')
         except Exception as e:
             logging.error(e)
 
@@ -93,9 +97,9 @@ class NNetMCTSAgent(Agent):
             random.shuffle(train_examples)
             logging.info('Starting training...')
 
-            self.nnet.save_checkpoint(filename='temp.data')
+            self.nnet.save_checkpoint(filename='temp.h5')
             new_nnet = MiniShogiNNetWrapper()
-            new_nnet.load_checkpoint(filename='temp.data')
+            new_nnet.load_checkpoint(filename='temp.h5')
             new_nnet.train(train_examples)
 
             # compare new net with previous net
@@ -104,11 +108,11 @@ class NNetMCTSAgent(Agent):
 
             if wins + nwins == 0 or float(nwins) / (wins + nwins) < self.args.threshold:
                 logging.info('Rejecting new NN')
-                self.nnet.load_checkpoint(filename='temp.data')
+                self.nnet.load_checkpoint(filename='temp.h5')
             else:
                 logging.info('Accepting new NN')
-                self.nnet.save_checkpoint(filename='temp.data')
-                self.nnet.save_checkpoint(filename='best.data')
+                self.nnet.save_checkpoint(filename='temp.h5')
+                self.nnet.save_checkpoint(filename='best.h5')
                 nnet = new_nnet  # replace with new net
                 self.MCTS.nnet = nnet
                 self.nnet = nnet
@@ -126,7 +130,7 @@ class NNetMCTSAgent(Agent):
             begin = time.time()
             while True:
                 current_agent = agent1 if g.game_state.colour == 'W' else agent2
-                current_agent.act(g)
+                current_agent.act(g, tau=0)
                 # logging.debug(g.game_state.print_state(flip=g.game_state.colour == 'B'))
                 if g.game_state.game_ended():
                     if(g.game_state.colour == 'W' and x == 0) or (g.game_state.colour == 'B' and x == 1):
@@ -148,11 +152,14 @@ class NNetMCTSAgent(Agent):
     def save_examples(self, iteration, folder='checkpoints', filename='examples'):
         if not os.path.exists(folder):
             os.makedirs(folder)
-        filename = os.path.join(folder, filename + str(iteration) + '.data')
-        with open(filename, 'wb+') as f:
+        filename_iter = os.path.join(folder, filename + str(iteration) + '.data')
+        with open(filename_iter, 'wb+') as f:
+            Pickler(f).dump(self.example_history)
+        filename_last = os.path.join(folder, filename + '_last' + '.data')
+        with open(filename_last, 'wb+') as f:
             Pickler(f).dump(self.example_history)
 
-    def load_examples(self, folder='checkpoints', filename='examples0.data'):
+    def load_examples(self, folder='checkpoints', filename='example_last.data'):
         examples_file = os.path.join(folder, filename)
 
         if os.path.isfile(examples_file):
@@ -161,4 +168,4 @@ class NNetMCTSAgent(Agent):
                 self.skip_first_self_play = True
                 logging.info('Examples loaded, skipping first self play')
         else:
-            logging.warning('Example file not found, generating...')
+            logging.warning('Example file not found')

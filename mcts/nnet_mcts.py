@@ -20,14 +20,24 @@ class NNetMCTS(MCTS):
         self.q_sa = {}  # q value for taking a in state s
         self.p_s = {}  # matrix list with action probs
         self.n_s = {}  # how many times s has been visited
-        #self.action_matrices = {}   # dict with action matrices
+        # self.action_matrices = {}   # dict with action matrices
         self.action_arrays = {}
         self.max_depth = config.args.max_depth
 
-    def get_action_probs(self, state):
+    def get_action_probs(self, state, tau=1):
         action_pool = self.action_arrays[state]
         freq = [self.n_sa[(state, action)] if (state, action) in self.n_sa else 0 for action in action_pool]
-        probs = [n/float(sum(freq)) for n in freq]
+
+        if tau == 0:
+            max_action_prob = max(freq)
+            probs = [0] * len(freq)
+            probs[freq.index(max_action_prob)] = 1
+            return probs
+
+        freq = [x ** (1. / tau) for x in freq]
+
+        probs = [n / float(sum(freq)) for n in freq]
+
         return probs
 
     def search(self, game):
@@ -37,12 +47,12 @@ class NNetMCTS(MCTS):
         v = 0
 
         for i in range(self.max_depth):
-            #logging.debug('\t\t\tMCTS Depth level: #{0}'.format(i))
+            # logging.debug('\t\t\tMCTS Depth level: #{0}'.format(i))
             current_state = last_state
-            #logging.debug(current_state.print_state(i))
+            # logging.debug(current_state.print_state(i))
 
             if current_state.game_ended():
-                #logging.debug('Found terminal node!')
+                # logging.debug('Found terminal node!')
                 v = -1
                 break
 
@@ -64,7 +74,7 @@ class NNetMCTS(MCTS):
                         'All valid moves were masked, making all equally probable')
                     self.p_s[current_state] = valid_moves
                     # renormilise
-                    self.p_s[current_state] /= np.sum(self.p_s[current_state])
+                    self.p_s[current_state] = self.p_s[current_state] / np.sum(self.p_s[current_state])
 
                 self.action_arrays[current_state] = MiniShogiGameState.action_matrix_to_action_array(valid_moves)
                 self.n_s[current_state] = 0
@@ -88,7 +98,7 @@ class NNetMCTS(MCTS):
 
         for (parent, action) in reversed(action_history):
             if (parent, action) not in self.q_sa:
-                self.q_sa[(parent, action)] = -v  #v is value of next state, hence using -v for this
+                self.q_sa[(parent, action)] = -v  # v is value of next state, hence using -v for this
                 v = -v
                 self.n_sa[(parent, action)] = 1
             else:

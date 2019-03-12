@@ -13,8 +13,9 @@ def play():
     rounds = 1
     white_wins = 0
     agent1 = random_agent.RandomAgent()
-    agent2 = nnet_mcts_agent.NNetMCTSAgent(
-        MiniShogiNNetWrapper())
+    nnet = MiniShogiNNetWrapper()
+    nnet.nnet.model.summary()
+    agent2 = nnet_mcts_agent.NNetMCTSAgent(nnet)
     print('Preparing neural net')
     agent2.train_neural_net()
     print('Preparation complete')
@@ -46,8 +47,7 @@ def play():
 
 
 if __name__ == '__main__':
-    # print(Game.get_coordinates(0,3,0,2))
-    random.seed(1)
+    #andom.seed(1)
     logging.basicConfig(format=' %(asctime)s %(name)-30s %(levelname)-8s %(message)s',
                         datefmt='%m/%d/%Y %I:%M:%S %p:',
                         filename='logs/game.log',

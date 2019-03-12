@@ -1,2 +1,2 @@
-from .nnet import *
+from .nnet_keras import *
 from .nnet_wrapper import *

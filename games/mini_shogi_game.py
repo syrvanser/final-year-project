@@ -209,7 +209,7 @@ class MiniShogiGameState:
             for y in range(0, MiniShogiGame.BOARD_Y):
                 if (self.board[y][x] in MiniShogiGame.ORDER[
                                         0:(len(MiniShogiGame.ORDER) // 2)]):  # for all your peices
-                    #logging.debug(str(self.board[y][x]) + ' at ' + str(x) + ', ' + str(y))
+                    # logging.debug(str(self.board[y][x]) + ' at ' + str(x) + ', ' + str(y))
                     piece_possible_actions = MiniShogiGame.piece_actions(self.board[y][x])
                     # logging.debug('\n'+ str(piece_possible_actions))
                     # TODO: add knight actions
@@ -230,17 +230,18 @@ class MiniShogiGameState:
                                                 break
 
                                         if clear:
-                                            #logging.debug('QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
-                                                #self.board[y][x], x, y, new_x, new_y))
-                                            actions[direction *
-                                                    MiniShogiGame.MAX_MOVE_MAGNITUDE + (magnitude - 1)][y][x] = 1
+                                            # logging.debug('QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
+                                            # self.board[y][x], x, y, new_x, new_y))
+                                            if (self.board[x][y] != 'P') or (new_y < MiniShogiGame.BOARD_Y - 1): #autopromote pawns
+                                                actions[direction *
+                                                        MiniShogiGame.MAX_MOVE_MAGNITUDE + (magnitude - 1)][y][x] = 1
 
                                             if (
                                                     new_y < MiniShogiGame.PROMOTION_ZONE_SIZE or y < MiniShogiGame.PROMOTION_ZONE_SIZE):
                                                 if not MiniShogiGame.is_promoted(self.board[y][x]):
-                                                    #logging.debug(
-                                                     #   'PROMOTION QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
-                                                      #      self.board[y][x], x, y, new_x, new_y))
+                                                    # logging.debug(
+                                                    #   'PROMOTION QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
+                                                    #      self.board[y][x], x, y, new_x, new_y))
                                                     actions[MiniShogiGame.QUEEN_ACTIONS + MiniShogiGame.KNIGHT_ACTIONS +
                                                             direction * MiniShogiGame.MAX_MOVE_MAGNITUDE + (
                                                                     magnitude - 1)][y][x] = 1
@@ -252,8 +253,8 @@ class MiniShogiGameState:
                             if (MiniShogiGame.HAND_ORDER[dropcount] != 'P' or (
                                     y != 0 and self.board[y - 1][x] != 'k' and (
                                     'P' not in (row[x] for row in self.board)))):
-                                #logging.debug('DROP: {0} to ({1}, {2})'.format(
-                                 #   MiniShogiGame.HAND_ORDER[dropcount], x, y))
+                                # logging.debug('DROP: {0} to ({1}, {2})'.format(
+                                #   MiniShogiGame.HAND_ORDER[dropcount], x, y))
                                 actions[MiniShogiGame.QUEEN_ACTIONS + MiniShogiGame.KNIGHT_ACTIONS +
                                         MiniShogiGame.PR_QUEEN_ACTIONS + MiniShogiGame.PR_KNIGHT_ACTIONS + dropcount][
                                     y][x] = 1
@@ -266,7 +267,7 @@ class MiniShogiGameState:
             for y in range(0, MiniShogiGame.BOARD_Y):
                 if (self.board[y][x] in MiniShogiGame.ORDER[
                                         0:(len(MiniShogiGame.ORDER) // 2)]):  # for all your pieces
-                    #logging.debug(str(self.board[y][x]) +
+                    # logging.debug(str(self.board[y][x]) +
                     #             ' at ' + str(x) + ', ' + str(y))
                     piece_possible_actions = MiniShogiGame.piece_actions(self.board[y][x])
                     # logging.debug('\n'+ str(piece_possible_actions))
@@ -290,7 +291,7 @@ class MiniShogiGameState:
 
                                         if clear:
                                             next_state = copy.deepcopy(self)
-                                            #logging.debug('QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
+                                            # logging.debug('QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
                                             #    self.board[y][x], x, y, new_x, new_y))
 
                                             if self.board[new_y][new_x] != '.' and self.board[new_y][new_x] != 'k':
@@ -305,7 +306,7 @@ class MiniShogiGameState:
                                             if (
                                                     new_y < MiniShogiGame.PROMOTION_ZONE_SIZE or y < MiniShogiGame.PROMOTION_ZONE_SIZE):
                                                 if not MiniShogiGame.is_promoted(self.board[y][x]):
-                                                    #logging.debug(
+                                                    # logging.debug(
                                                     #    'PROMOTION QUEEN MOVE: {0} from ({1}, {2}) to ({3}, {4})'.format(
                                                     #        self.board[y][x], x, y, new_x, new_y))
                                                     next_state = copy.deepcopy(self)
@@ -327,7 +328,7 @@ class MiniShogiGameState:
                             if (MiniShogiGame.HAND_ORDER[dropcount] != 'P') or (
                                     y != 0 and self.board[y - 1][x] != 'k' and (
                                     'P' not in (row[x] for row in self.board))):
-                                #logging.debug(
+                                # logging.debug(
                                 #    'DROP: {0} to ({1}, {2})'.format(MiniShogiGame.HAND_ORDER[dropcount], x, y))
                                 piece = MiniShogiGame.HAND_ORDER[dropcount]
                                 next_state = copy.deepcopy(self)
@@ -356,6 +357,13 @@ class MiniShogiGameState:
                     if matrix[z][y][x] != 0:
                         array.append(MiniShogiGameState.action_to_state(state, (z, y, x)))
         return array
+
+    @staticmethod
+    def prob_list_to_matrix(pi_list, actions):
+        matrix = np.zeros((MiniShogiGame.ACTION_STACK_HEIGHT, MiniShogiGame.BOARD_Y, MiniShogiGame.BOARD_X))
+        for i, a in enumerate(actions):
+            matrix[a] = pi_list[i]
+        return matrix
 
     @staticmethod
     def action_to_state(state, action):
@@ -487,7 +495,6 @@ class MiniShogiGameState:
                        len(MiniShogiGame.ORDER) + (2 * len(MiniShogiGame.HAND_ORDER)) + MiniShogiGame.ALLOWED_REPEATS):
             if stack[i][0][0] == 1:
                 repetitions += 1
-        # todo - change [0][0] to all
         colour = 'W' if stack[len(
             MiniShogiGame.ORDER) + (2 * len(MiniShogiGame.HAND_ORDER)) + MiniShogiGame.ALLOWED_REPEATS][0][
                             0] == 1 else 'B'

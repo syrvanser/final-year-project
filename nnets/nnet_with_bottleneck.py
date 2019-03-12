@@ -1,12 +1,13 @@
 from keras.models import *
 from keras.layers import *
 from keras.optimizers import *
+from keras.regularizers import l2
 
 import config
 from games import MiniShogiGame
 
 
-class MiniShogiNNet:
+class MiniShogiNNetBottleNeck:
     def __init__(self):
         args = config.args
 
@@ -20,16 +21,16 @@ class MiniShogiNNet:
         self.input = Input(shape=self.input_shape)
         # x_input = Reshape((Game.BOARD_Y, Game.BOARD_X, Game.STATE_STACK_HEIGHT, 1))(self.input)
         h_conv1 = Activation('relu')(BatchNormalization(axis=3)(
-            Conv2D(args.num_channels, args.filter_size, padding='same', use_bias=False)(
+            Conv2D(args.num_filters, args.kernel_size, padding='same', use_bias=False)(
                 self.input)))  # batch_size  x board_x x board_y x num_channels
         h_conv2 = Activation('relu')(BatchNormalization(axis=3)(
-            Conv2D(args.num_channels, args.filter_size, padding='same', use_bias=False)(
+            Conv2D(args.num_filters, args.kernel_size, padding='same', use_bias=False)(
                 h_conv1)))  # batch_size  x board_x x board_y x num_channels
         h_conv3 = Activation('relu')(BatchNormalization(axis=3)(
-            Conv2D(args.num_channels, args.filter_size, padding='valid', use_bias=False)(
+            Conv2D(args.num_filters, args.kernel_size, padding='valid', use_bias=False)(
                 h_conv2)))  # batch_size  x (board_x-2) x (board_y-2) x num_channels
         h_conv4 = Activation('relu')(BatchNormalization(axis=3)(
-            Conv2D(args.num_channels, args.filter_size, padding='valid', use_bias=False)(
+            Conv2D(args.num_filters, args.kernel_size, padding='valid', use_bias=False)(
                 h_conv3)))  # batch_size  x (board_x-4) x (board_y-4) x num_channels
         h_conv4_flat = Flatten()(h_conv4)
         s_fc1 = Dropout(args.dropout)(Activation('relu')(
