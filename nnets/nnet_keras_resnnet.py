@@ -7,7 +7,7 @@ import config
 from games import MiniShogiGame
 
 
-class MiniShogiNNetKeras:
+class MiniShogiNNetKerasResNet:
     def __init__(self):
 
         self.args = config.args
@@ -34,10 +34,15 @@ class MiniShogiNNetKeras:
         x = ReLU(name='out_relu_1')(x)
         x = Dropout(self.args.dropout, name='out_dropout_1')(x)
 
-        x = Dense(2125, activation='linear', name='out_dense_2', use_bias=False)(x)
+        x = Dense(1600, activation='linear', name='out_dense_2', use_bias=False)(x)
         x = BatchNormalization(axis=1, name='out_batch_norm_2')(x)
         x = ReLU(name='out_relu_2')(x)
         x = Dropout(self.args.dropout, name='out_dropout_2')(x)
+
+        x = Dense(800, activation='linear', name='out_dense_3', use_bias=False)(x)
+        x = BatchNormalization(axis=1, name='out_batch_norm_3')(x)
+        x = ReLU(name='out_relu_3')(x)
+        x = Dropout(self.args.dropout, name='out_dropout_3')(x)
 
         v = Dense(1, activation='tanh', name='value_dense_out', use_bias=False)(x)
 
@@ -48,12 +53,18 @@ class MiniShogiNNetKeras:
         #self.model.summary()
 
     def build_block(self, x, index):
-        #in_x = x
+        in_x = x
         x = Conv2D(filters=self.args.num_filters, kernel_size=self.args.kernel_size, padding='same',
                    data_format="channels_last", use_bias=False, kernel_regularizer=l2(self.args.reg),
-                   name='block_' + str(index) + '_conv')(x)
+                   name='block_' + str(index) + '_conv_1')(x)
+        x = BatchNormalization(axis=3, name='block_' + str(index) + "_batch_norm_1")(x)
+        x = ReLU(name='block_' + str(index) + '_relu_1')(x)
+
+        x = Conv2D(filters=self.args.num_filters, kernel_size=self.args.kernel_size, padding='same',
+                   data_format="channels_last", use_bias=False, kernel_regularizer=l2(self.args.reg),
+                   name='block_' + str(index) + '_conv_2')(x)
         x = BatchNormalization(axis=3, name='block_' + str(index) + "_batch_norm")(x)
-        x = ReLU(name='block_' + str(index) + '_relu')(x)
-        #x = Add(name='block_' + str(index) + '_add')([in_x, x])
+        x = Add(name='block_' + str(index) + '_add_2')([in_x, x])
+        x = ReLU(name='block_' + str(index) + '_relu_2')(x)
 
         return x

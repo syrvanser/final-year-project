@@ -1,23 +1,28 @@
 import logging
 import random
+import sys
 import time
 
 import numpy as np
 
-from agents import random_agent, nnet_mcts_agent
+from agents import HumanAgent, NNetMCTSAgent, RandomAgent, BasicMCTSAgent
 from games import mini_shogi_game
 from nnets.nnet_wrapper import MiniShogiNNetWrapper
+from keras.utils.vis_utils import plot_model
 
 
 def play():
-    rounds = 1
+    rounds = 100
     white_wins = 0
-    agent1 = random_agent.RandomAgent()
+    agent1 = RandomAgent()
     nnet = MiniShogiNNetWrapper()
     nnet.nnet.model.summary()
-    agent2 = nnet_mcts_agent.NNetMCTSAgent(nnet)
+    plot_model(nnet.nnet.model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
+    agent2 = NNetMCTSAgent(nnet)
     print('Preparing neural net')
     agent2.train_neural_net()
+    agent2.nnet.load_checkpoint(filename='best.h5')
+
     print('Preparation complete')
     for i in range(1, rounds + 1):
         begin = time.time()
@@ -47,11 +52,11 @@ def play():
 
 
 if __name__ == '__main__':
-    #andom.seed(1)
+    #random.seed(1)
     logging.basicConfig(format=' %(asctime)s %(name)-30s %(levelname)-8s %(message)s',
                         datefmt='%m/%d/%Y %I:%M:%S %p:',
                         filename='logs/game.log',
                         filemode='w',
                         level=logging.INFO)
-    np.set_printoptions(threshold=np.nan)
+    np.set_printoptions(threshold=sys.maxsize)
     play()

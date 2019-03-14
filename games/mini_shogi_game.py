@@ -114,22 +114,22 @@ class MiniShogiGame(Game):
         return new_x, new_y
 
     @staticmethod
-    def get_direction(x, y, new_x, new_y):
+    def get_direction(x, y, new_x, new_y): #2 4 1 3
         if new_x == x and new_y < y:
             direction = 0
         elif new_x > x and new_y < y:
             direction = 1
         elif new_x > x and new_y == y:
             direction = 2
-        elif new_x > x and new_y < y:
+        elif new_x > x and new_y > y:
             direction = 3
-        elif new_x == x and new_y < y:
+        elif new_x == x and new_y > y:
             direction = 4
-        elif new_x < x and new_y < y:
+        elif new_x < x and new_y > y:
             direction = 5
         elif new_x < x and new_y == y:
             direction = 6
-        elif new_x < x and new_y > y:
+        elif new_x < x and new_y < y:
             direction = 7
         else:
             raise Exception('Invalid coordinates!')
@@ -368,7 +368,7 @@ class MiniShogiGameState:
     @staticmethod
     def action_to_state(state, action):
         next_state = copy.deepcopy(state)
-        (z, y, x) = action
+        (z, y, x) = action #84 2 0
         if z < MiniShogiGame.QUEEN_ACTIONS:
             direction = z // MiniShogiGame.MAX_MOVE_MAGNITUDE
             magnitude = (z % MiniShogiGame.MAX_MOVE_MAGNITUDE) + 1

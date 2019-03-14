@@ -4,11 +4,15 @@ import os
 import time
 
 import numpy as np
+import tensorflow as tf
 from keras.callbacks import TensorBoard
+import keras.backend as K
 
 import config
 from games import MiniShogiGame, MiniShogiGameState
-from nnets import MiniShogiNNetKeras, tf
+from nnets import MiniShogiNNetKeras, MiniShogiNNetBottleNeck, MiniShogiNNetKerasResNet, MiniShogiNNetConvResNet
+from tensorflow.python import debug as tf_debug
+
 
 class MiniShogiNNetWrapper:
 
@@ -18,11 +22,16 @@ class MiniShogiNNetWrapper:
         with self.graph.as_default():
             self.session = tf.Session()
             with self.session.as_default():
-                self.nnet = MiniShogiNNetKeras()
+        #sess = K.get_session()
+        #sess = tf_debug.LocalCLIDebugWrapperSession(sess)
+
+        #K.set_session(sess)
+                #self.session = sess
+                self.nnet = MiniShogiNNetBottleNeck()
                 self.nnet.model._make_predict_function() #does not work otherwise @see https://github.com/keras-team/keras/issues/2397#issuecomment-385317242
-        self.args = config.args
-        self.tensorboard = TensorBoard(log_dir="logs/{}".format(time.time()), histogram_freq=0,
-                                       write_graph=True, write_images=True)
+                self.args = config.args
+                self.tensorboard = TensorBoard(log_dir="logs/{}".format(time.time()), histogram_freq=1,
+                                               write_graph=True, write_images=True, write_grads=False)
 
     def train(self, examples):
         """
@@ -44,10 +53,11 @@ class MiniShogiNNetWrapper:
                 assert not np.any(np.isnan(target_pis))
                 assert not np.any(np.isnan(target_vs))
                 self.nnet.model.fit(x=input_states, y=[target_pis, target_vs], batch_size=self.args.batch_size,
-                                    epochs=self.args.epochs, callbacks=[self.tensorboard])
+                                    epochs=self.args.epochs, callbacks=[self.tensorboard],  shuffle=True,
+                             validation_split=0.02)
 
     def predict(self, state):
-        # start = time.time()
+        start = time.time()
         with self.graph.as_default():
             with self.session.as_default():
 
@@ -60,9 +70,9 @@ class MiniShogiNNetWrapper:
 
                 pi = np.reshape(pi, (-1, MiniShogiGame.ACTION_STACK_HEIGHT, MiniShogiGame.BOARD_Y, MiniShogiGame.BOARD_X))
 
-                # logging.debug('Prediction time : {0:03f}'.format(time.time() - start))
+        # logging.debug('Prediction time : {0:03f}'.format(time.time() - start))
 
-                return pi[0], v[0][0]
+        return pi[0], v[0][0]
 
     def save_checkpoint(self, folder='checkpoints', filename='weight_checkpoint.h5'):
         with self.graph.as_default():
@@ -77,5 +87,6 @@ class MiniShogiNNetWrapper:
             with self.session.as_default():
                 filepath = os.path.join(folder, filename)
                 if not os.path.exists(filepath):
-                    raise Exception("No model found in {0}".format(filepath))
-                self.nnet.model.load_weights(filepath)
+                    logging.warning("No model found in {0}".format(filepath))
+                else:
+                    self.nnet.model.load_weights(filepath)

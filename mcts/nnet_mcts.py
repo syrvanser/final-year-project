@@ -25,6 +25,7 @@ class NNetMCTS(MCTS):
         self.max_depth = config.args.max_depth
 
     def get_action_probs(self, state, tau=1):
+        #logging.info('getting the probability vector')
         action_pool = self.action_arrays[state]
         freq = [self.n_sa[(state, action)] if (state, action) in self.n_sa else 0 for action in action_pool]
 
@@ -35,8 +36,11 @@ class NNetMCTS(MCTS):
             return probs
 
         freq = [x ** (1. / tau) for x in freq]
-
         probs = [n / float(sum(freq)) for n in freq]
+
+        #logging.info(state.print_state())
+        #logging.info(probs) #print(probs)
+        #logging.info(action_pool)
 
         return probs
 
@@ -107,3 +111,4 @@ class NNetMCTS(MCTS):
                 v = -v
                 self.n_sa[(parent, action)] += 1
             self.n_s[parent] += 1
+
