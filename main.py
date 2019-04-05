@@ -3,31 +3,34 @@ import random
 import sys
 import time
 
+import tensorflow as tf
+
 import numpy as np
 
 from agents import HumanAgent, NNetMCTSAgent, RandomAgent, BasicMCTSAgent
-from games import mini_shogi_game
+from games import mini_shogi_game, MiniShogiGame
 from nnets.nnet_wrapper import MiniShogiNNetWrapper
 from keras.utils.vis_utils import plot_model
 
 
 def play():
-    rounds = 100
+    rounds = 30
     white_wins = 0
-    agent1 = RandomAgent()
+    agent1 = BasicMCTSAgent(limit=200, max_depth=300)
     nnet = MiniShogiNNetWrapper()
     nnet.nnet.model.summary()
     plot_model(nnet.nnet.model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
-    agent2 = NNetMCTSAgent(nnet)
+    agent2 = NNetMCTSAgent(nnet, comp=False)
     print('Preparing neural net')
     agent2.train_neural_net()
+    agent2.comp = True
     agent2.nnet.load_checkpoint(filename='best.h5')
 
     print('Preparation complete')
     for i in range(1, rounds + 1):
         begin = time.time()
         print('Game {0}/{1}'.format(i, rounds))
-        g = mini_shogi_game.MiniShogiGame()
+        g = MiniShogiGame()
         while True:
             current_agent = agent1 if g.game_state.colour == 'W' else agent2
             current_agent.act(g)
@@ -49,14 +52,20 @@ def play():
                     i - white_wins, (i - white_wins) / i * 100,
                     time.time() - begin))
                 break
+            if g.game_state.move_count > 300:  # stop very long games
+                print('Game too long, terminating')
+                break
 
 
 if __name__ == '__main__':
-    #random.seed(1)
-    logging.basicConfig(format=' %(asctime)s %(name)-30s %(levelname)-8s %(message)s',
+    #seed = 42
+    #random.seed(seed)
+    #np.random.seed(seed)
+    #tf.set_random_seed(seed)
+    logging.basicConfig(format=' %(asctime)s %(module)-30s %(levelname)-8s %(message)s',
                         datefmt='%m/%d/%Y %I:%M:%S %p:',
                         filename='logs/game.log',
-                        filemode='w',
+                        filemode='a',
                         level=logging.INFO)
     np.set_printoptions(threshold=sys.maxsize)
     play()

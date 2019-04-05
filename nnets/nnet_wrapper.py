@@ -10,9 +10,7 @@ import keras.backend as K
 
 import config
 from games import MiniShogiGame, MiniShogiGameState
-from nnets import MiniShogiNNetKeras, MiniShogiNNetBottleNeck, MiniShogiNNetKerasResNet, MiniShogiNNetConvResNet
-from tensorflow.python import debug as tf_debug
-
+from nnets import MiniShogiNNetKeras, MiniShogiNNetBottleNeck, MiniShogiNNetConvResNet
 
 class MiniShogiNNetWrapper:
 
@@ -22,15 +20,17 @@ class MiniShogiNNetWrapper:
         with self.graph.as_default():
             self.session = tf.Session()
             with self.session.as_default():
-        #sess = K.get_session()
-        #sess = tf_debug.LocalCLIDebugWrapperSession(sess)
+                self.nnet = MiniShogiNNetConvResNet()
+                # sess = K.get_session()
+                # sess = tf_debug.LocalCLIDebugWrapperSession(sess)
 
-        #K.set_session(sess)
-                #self.session = sess
-                self.nnet = MiniShogiNNetBottleNeck()
-                self.nnet.model._make_predict_function() #does not work otherwise @see https://github.com/keras-team/keras/issues/2397#issuecomment-385317242
+                # K.set_session(sess)
+                # self.session = ses
+
+                self.nnet.model._make_predict_function()  # does not work otherwise @see https://github.com/keras-team/keras/issues/2397#issuecomment-385317242
                 self.args = config.args
-                self.tensorboard = TensorBoard(log_dir="logs/{}".format(time.time()), histogram_freq=1,
+                self.tensorboard = TensorBoard(log_dir='logs/{0}{1}'.format(datetime.now().strftime('%Y-%m-%d-%H-%M-%S'), self.nnet.__class__.__name__),
+                                               histogram_freq=1,
                                                write_graph=True, write_images=True, write_grads=False)
 
     def train(self, examples):
@@ -52,15 +52,16 @@ class MiniShogiNNetWrapper:
                 assert not np.any(np.isnan(input_states))
                 assert not np.any(np.isnan(target_pis))
                 assert not np.any(np.isnan(target_vs))
-                self.nnet.model.fit(x=input_states, y=[target_pis, target_vs], batch_size=self.args.batch_size,
-                                    epochs=self.args.epochs, callbacks=[self.tensorboard],  shuffle=True,
-                             validation_split=0.02)
+                return self.nnet.model.fit(x=input_states, y=[target_pis, target_vs],
+                                              batch_size=self.args.batch_size,
+                                              epochs=self.args.epochs, callbacks=[self.tensorboard], shuffle=True,
+                                              validation_split=0.1)
+
 
     def predict(self, state):
-        start = time.time()
+        # start = time.time()
         with self.graph.as_default():
             with self.session.as_default():
-
                 stack = MiniShogiGameState.state_to_plane_stack(state)
 
                 stack = np.swapaxes(stack, 0, -1)
@@ -68,7 +69,9 @@ class MiniShogiNNetWrapper:
                 stack = stack[np.newaxis, :, :, :]
                 pi, v = self.nnet.model.predict(stack)
 
-                pi = np.reshape(pi, (-1, MiniShogiGame.ACTION_STACK_HEIGHT, MiniShogiGame.BOARD_Y, MiniShogiGame.BOARD_X))
+                pi = np.reshape(pi,
+                                (-1, MiniShogiGame.ACTION_STACK_HEIGHT, MiniShogiGame.BOARD_Y, MiniShogiGame.BOARD_X))
+
 
         # logging.debug('Prediction time : {0:03f}'.format(time.time() - start))
 

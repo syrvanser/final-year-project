@@ -25,7 +25,6 @@ class NNetMCTS(MCTS):
         self.max_depth = config.args.max_depth
 
     def get_action_probs(self, state, tau=1):
-        #logging.info('getting the probability vector')
         action_pool = self.action_arrays[state]
         freq = [self.n_sa[(state, action)] if (state, action) in self.n_sa else 0 for action in action_pool]
 
@@ -36,11 +35,8 @@ class NNetMCTS(MCTS):
             return probs
 
         freq = [x ** (1. / tau) for x in freq]
-        probs = [n / float(sum(freq)) for n in freq]
 
-        #logging.info(state.print_state())
-        #logging.info(probs) #print(probs)
-        #logging.info(action_pool)
+        probs = [n / float(sum(freq)) for n in freq]
 
         return probs
 
@@ -66,12 +62,12 @@ class NNetMCTS(MCTS):
                 self.p_s[current_state] = self.p_s[current_state].reshape(
                     MiniShogiGame.ACTION_STACK_HEIGHT, MiniShogiGame.BOARD_Y, MiniShogiGame.BOARD_X)
                 valid_moves = current_state.allowed_actions_matrix()
-                # masking invalid moves elementwise multiplication
+                # masking invalid moves element wise multiplication
                 self.p_s[current_state] = self.p_s[current_state] * valid_moves
                 sum_prob_vector = np.sum(self.p_s[current_state])
                 if sum_prob_vector > 0:
                     self.p_s[current_state] /= sum_prob_vector  # renormalize
-
+                    #logging.info(self.p_s[current_state])
                 else:
                     # if all valid moves were masked make all valid moves equally probable
                     logging.warning(

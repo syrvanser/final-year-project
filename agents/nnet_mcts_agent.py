@@ -17,9 +17,9 @@ from nnets import MiniShogiNNetWrapper
 
 
 class NNetMCTSAgent(Agent):
-    def __init__(self, nnet):
-
+    def __init__(self, nnet, comp=False):
         super().__init__()
+        self.comp = comp
         self.args = config.args
         self.skip_first_self_play = False
         self.nnet = nnet
@@ -27,13 +27,16 @@ class NNetMCTSAgent(Agent):
         self.example_history = []
 
     def act(self, game, tau=1):
-
+        if self.comp:
+            tau = 0
         for i in range(self.args.mcts_iterations):
             #logging.debug('Playout: #{0}'.format(i))
             self.MCTS.search(game)
 
         action_pool = self.MCTS.action_arrays[game.game_state]
         pi_list = self.MCTS.get_action_probs(game.game_state, tau=tau)  #list
+
+        #logging.info(pi_list)
         pi_matrix = MiniShogiGameState.prob_list_to_matrix(pi_list, action_pool)
 
         action_tuple = (MiniShogiGameState.state_to_plane_stack(game.game_state), pi_matrix, None,
@@ -47,8 +50,6 @@ class NNetMCTSAgent(Agent):
         #    self.MCTS.p_s[game.game_state][next_action]))
 
         game.take_action(next_action)
-
-
 
         return action_tuple
 
@@ -64,14 +65,14 @@ class NNetMCTSAgent(Agent):
             iteration_examples.append(action)
             if game.game_state.game_ended():
                 break
-            if game.game_state.move_count > self.args.move_count_limit:  # just stop very long games
+            if game.game_state.move_count > self.args.move_count_limit:  # stop very long games
                 logging.warning('Game too long, terminating')
-                break
+                return []
 
-        return [(e[0], e[1], (-1) ** (game.game_state.colour == e[3])) for e in iteration_examples]
+        return [(e[0], e[1], (-1) if (game.game_state.colour == e[3]) else 1) for e in iteration_examples]
 
     def train_neural_net(self):
-
+        logging.info('Training {0}'.format(self.nnet.nnet.__class__.__name__))
         logging.info('Loading previous examples and model')
         try:
             self.load_examples(filename='examples_last.data')
@@ -79,13 +80,13 @@ class NNetMCTSAgent(Agent):
         except Exception as e:
             logging.error(e)
 
-        for i in range(self.args.num_epochs):
+        for i in range(self.args.num_train_cycles):
             if (not self.skip_first_self_play) or i > 0:
                 logging.info('Generating examples')
                 iteration_examples = deque([], maxlen=self.args.max_examples_len)
                 # collect examples from this game
 
-                for e in range(self.args.max_example_games):
+                for e in range(self.args.example_games_per_cycle):
                     #logging.info('Example {0}/{1}'.format(e+1, self.args.max_example_games))
                     self.MCTS = NNetMCTS(nnet=self.nnet)
                     # collect examples from this game
@@ -105,11 +106,11 @@ class NNetMCTSAgent(Agent):
             logging.info('Starting training...')
 
             self.nnet.save_checkpoint(filename='temp.h5')
+            self.nnet.save_checkpoint(filename='nnet{0}.h5'.format(i))
             new_nnet = MiniShogiNNetWrapper()
             new_nnet.load_checkpoint(filename='temp.h5')
-            self.nnet.train(train_examples)
-
-                        # compare new net with previous net
+            history = new_nnet.train(train_examples)
+            # compare new net with previous net
             logging.info('Comparing two NNets')
             wins, nwins = self.simulate(new_nnet)
 
@@ -120,6 +121,8 @@ class NNetMCTSAgent(Agent):
                 logging.info('Accepting new NN')
                 self.nnet.save_checkpoint(filename='temp.h5')
                 self.nnet.save_checkpoint(filename='best.h5')
+                with open("logs/loss.log", "a") as loss_history:
+                    loss_history.write(str(history.history) + '\n')
                 nnet = new_nnet  # replace with new net
                 self.MCTS.nnet = nnet
                 self.nnet = nnet

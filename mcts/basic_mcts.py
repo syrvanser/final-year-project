@@ -18,7 +18,7 @@ class BasicMCTS(MCTS):
         states_history_copy = game.state_history[:]
         expand = True
         for i in range(self.max_depth):
-            logging.debug('Depth level: #{0}'.format(i))
+            #logging.debug('Depth level: #{0}'.format(i))
             current_state = states_history_copy[-1]
             logging.debug(current_state.print_state(i))
 
@@ -29,8 +29,8 @@ class BasicMCTS(MCTS):
             states_pool = current_state.next_states_array()
             # print('{0} {1}'.format(len(states_pool), len(states_pool2)))
             explored = sum(el in self.n for el in states_pool)
-            logging.debug(
-                'Actions explored: {0}/{1}'.format(explored, len(states_pool)))
+            #logging.info(
+            #    'Actions explored: {0}/{1}'.format(explored, len(states_pool)))
 
             if all(self.n.get(s) for s in states_pool):
                 log_total = log(
