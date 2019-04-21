@@ -16,11 +16,12 @@ class MiniShogiNNetWrapper:
 
     def __init__(self):
         self.graph = tf.Graph()
-
         with self.graph.as_default():
             self.session = tf.Session()
             with self.session.as_default():
                 self.nnet = MiniShogiNNetConvResNet()
+                self.name = str(datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + str(self.nnet.__class__.__name__))
+
                 # sess = K.get_session()
                 # sess = tf_debug.LocalCLIDebugWrapperSession(sess)
 
@@ -29,9 +30,9 @@ class MiniShogiNNetWrapper:
 
                 self.nnet.model._make_predict_function()  # does not work otherwise @see https://github.com/keras-team/keras/issues/2397#issuecomment-385317242
                 self.args = config.args
-                self.tensorboard = TensorBoard(log_dir='logs/{0}{1}'.format(datetime.now().strftime('%Y-%m-%d-%H-%M-%S'), self.nnet.__class__.__name__),
-                                               histogram_freq=1,
-                                               write_graph=True, write_images=True, write_grads=False)
+                self.tensorboard = TensorBoard(log_dir='logs/{0}'.format(self.name),
+                                               histogram_freq=0,
+                                               write_graph=True, write_images=False, write_grads=False)
 
     def train(self, examples):
         """

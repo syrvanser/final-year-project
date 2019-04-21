@@ -14,6 +14,7 @@ from agents import Agent
 from games import MiniShogiGame, MiniShogiGameState
 from mcts import NNetMCTS
 from nnets import MiniShogiNNetWrapper
+from utils.normalise import normalise_examples
 
 
 class NNetMCTSAgent(Agent):
@@ -36,13 +37,14 @@ class NNetMCTSAgent(Agent):
         action_pool = self.MCTS.action_arrays[game.game_state]
         pi_list = self.MCTS.get_action_probs(game.game_state, tau=tau)  #list
 
-        #logging.info(pi_list)
         pi_matrix = MiniShogiGameState.prob_list_to_matrix(pi_list, action_pool)
 
         action_tuple = (MiniShogiGameState.state_to_plane_stack(game.game_state), pi_matrix, None,
                         game.game_state.colour)
 
         next_action = action_pool[np.random.choice(len(action_pool), p=pi_list)]
+        #logging.debug('Value: {0}\nProbs: {1}'.format(self.MCTS.q_sa[game.game_state, next_action], self.MCTS.get_action_probs(game.game_state, tau=1)))
+
 
         #logging.info('Selecting action with q={0} n={1} p={2}'.format(
         #    self.MCTS.q_sa.get((game.game_state, next_action), 'n/a'),
@@ -73,21 +75,28 @@ class NNetMCTSAgent(Agent):
 
     def train_neural_net(self):
         logging.info('Training {0}'.format(self.nnet.nnet.__class__.__name__))
+        #self.nnet.save_checkpoint(filename='nnet0.h5')
         logging.info('Loading previous examples and model')
         try:
             self.load_examples(filename='examples_last.data')
+        except Exception as e:
+            logging.error(e)
+        try:
             self.nnet.load_checkpoint(filename='best.h5')
         except Exception as e:
             logging.error(e)
 
-        for i in range(self.args.num_train_cycles):
-            if (not self.skip_first_self_play) or i > 0:
+        start_val = self.args.start_val #IMPORTANT
+
+        for i in range(start_val, self.args.num_train_cycles+start_val):
+            if (not self.skip_first_self_play) or i > start_val:
                 logging.info('Generating examples')
                 iteration_examples = deque([], maxlen=self.args.max_examples_len)
                 # collect examples from this game
 
                 for e in range(self.args.example_games_per_cycle):
-                    #logging.info('Example {0}/{1}'.format(e+1, self.args.max_example_games))
+                    if(e % (self.args.example_games_per_cycle/10) == 0):
+                        logging.info('Example {0}/{1}'.format(e+1, self.args.example_games_per_cycle))
                     self.MCTS = NNetMCTS(nnet=self.nnet)
                     # collect examples from this game
                     iteration_examples += self.run_single_game()
@@ -99,33 +108,35 @@ class NNetMCTSAgent(Agent):
 
                 self.save_examples(i)
             #exit(0)
-            train_examples = []
-            for e in self.example_history:
-                train_examples.extend(e)
+            #train_examples = []
+            #for e in self.example_history:
+            #    train_examples.extend(e)
+            train_examples = normalise_examples(self.example_history)
             random.shuffle(train_examples)
             logging.info('Starting training...')
 
             self.nnet.save_checkpoint(filename='temp.h5')
-            self.nnet.save_checkpoint(filename='nnet{0}.h5'.format(i))
             new_nnet = MiniShogiNNetWrapper()
             new_nnet.load_checkpoint(filename='temp.h5')
             history = new_nnet.train(train_examples)
+            new_nnet.save_checkpoint(filename='nnet{0}.h5'.format(i))
             # compare new net with previous net
             logging.info('Comparing two NNets')
             wins, nwins = self.simulate(new_nnet)
 
             if wins + nwins == 0 or nwins < self.args.threshold:
                 logging.info('Rejecting new NN')
-                self.nnet.load_checkpoint(filename='temp.h5')
+                self.nnet.save_checkpoint(filename='best.h5')
+                #self.nnet.load_checkpoint(filename='temp.h5')
             else:
                 logging.info('Accepting new NN')
-                self.nnet.save_checkpoint(filename='temp.h5')
-                self.nnet.save_checkpoint(filename='best.h5')
+                #new_nnet.save_checkpoint(filename='temp.h5')
+                new_nnet.save_checkpoint(filename='best.h5')
                 with open("logs/loss.log", "a") as loss_history:
+                    loss_history.write(new_nnet.name + '\n')
                     loss_history.write(str(history.history) + '\n')
-                nnet = new_nnet  # replace with new net
-                self.MCTS.nnet = nnet
-                self.nnet = nnet
+                self.MCTS.nnet = new_nnet
+                self.nnet = new_nnet
 
     def simulate(self, new_nnet):
         non_draw_rounds = 0

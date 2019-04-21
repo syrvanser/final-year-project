@@ -10,7 +10,7 @@ from games import Game
 class MiniShogiGame(Game):
     BOARD_X = 5
     BOARD_Y = 5
-    ALLOWED_REPEATS = 3
+    ALLOWED_REPEATS = 0
     INITIAL_LAYOUT = [['r', 'b', 's', 'g', 'k'],
                       ['.', '.', '.', '.', 'p'],
                       ['.', '.', '.', '.', '.'],
@@ -21,7 +21,7 @@ class MiniShogiGame(Game):
              'K', 'p', 's', 'g', 'b', 'r', '+p', '+s', '+b', '+r', 'k']
     HAND_ORDER = ['P', 'S', 'G', 'B', 'R']
 
-    MAX_MOVE_MAGNITUDE = (max(BOARD_X, BOARD_Y))
+    MAX_MOVE_MAGNITUDE = (max(BOARD_X-1, BOARD_Y-1))
     QUEEN_ACTIONS = 8 * MAX_MOVE_MAGNITUDE
     KNIGHT_ACTIONS = 0  # no knights in minishogi
     PR_QUEEN_ACTIONS = QUEEN_ACTIONS
@@ -150,7 +150,7 @@ class MiniShogiGame(Game):
         return piece[0] == '+' or piece == 'K' or piece == 'k' or piece == 'G' or piece == 'g'
 
     @classmethod
-    def unpromote(cls, piece):
+    def demote(cls, piece):
         return piece.replace('+', '').upper()
 
     @classmethod
@@ -214,7 +214,7 @@ class MiniShogiGameState:
                     # logging.debug('\n'+ str(piece_possible_actions))
                     # TODO: add knight actions
                     for direction in range(0, 8):
-                        for magnitude in range(1, MiniShogiGame.MAX_MOVE_MAGNITUDE):
+                        for magnitude in range(1, MiniShogiGame.MAX_MOVE_MAGNITUDE+1):
                             if piece_possible_actions[direction][magnitude - 1]:
                                 new_x, new_y = MiniShogiGame.get_coordinates(
                                     x, y, magnitude, direction)
@@ -296,7 +296,7 @@ class MiniShogiGameState:
 
                                             if self.board[new_y][new_x] != '.' and self.board[new_y][new_x] != 'k':
                                                 next_state.hand1.append(
-                                                    MiniShogiGame.unpromote(next_state.board[new_y][new_x]))
+                                                    MiniShogiGame.demote(next_state.board[new_y][new_x]))
                                             next_state.board[new_y][new_x] = next_state.board[y][x]
                                             next_state.board[y][x] = '.'
 
@@ -314,7 +314,7 @@ class MiniShogiGameState:
                                                     if self.board[new_y][new_x] != '.' and self.board[new_y][
                                                         new_x] != 'k':
                                                         next_state.hand1.append(
-                                                            MiniShogiGame.unpromote(next_state.board[new_y][new_x]))
+                                                            MiniShogiGame.demote(next_state.board[new_y][new_x]))
                                                     next_state.board[new_y][new_x] = MiniShogiGame.promote(
                                                         next_state.board[y][x])
                                                     next_state.board[y][x] = '.'
@@ -374,7 +374,7 @@ class MiniShogiGameState:
             magnitude = (z % MiniShogiGame.MAX_MOVE_MAGNITUDE) + 1
             new_x, new_y = MiniShogiGame.get_coordinates(x, y, magnitude, direction)
             if next_state.board[new_y][new_x] != '.' and next_state.board[new_y][new_x] != 'k':
-                next_state.hand1.append(MiniShogiGame.unpromote(next_state.board[new_y][new_x]))
+                next_state.hand1.append(MiniShogiGame.demote(next_state.board[new_y][new_x]))
             next_state.board[new_y][new_x] = next_state.board[y][x]
             next_state.board[y][x] = '.'
         elif z < MiniShogiGame.QUEEN_ACTIONS + MiniShogiGame.KNIGHT_ACTIONS:  # TODO knight moves
@@ -386,7 +386,7 @@ class MiniShogiGameState:
                          MiniShogiGame.MAX_MOVE_MAGNITUDE) + 1
             new_x, new_y = MiniShogiGame.get_coordinates(x, y, magnitude, direction)
             if next_state.board[new_y][new_x] != '.' and next_state.board[new_y][new_x] != 'k':
-                next_state.hand1.append(MiniShogiGame.unpromote(next_state.board[new_y][new_x]))
+                next_state.hand1.append(MiniShogiGame.demote(next_state.board[new_y][new_x]))
             next_state.board[new_y][new_x] = MiniShogiGame.promote(next_state.board[y][x])
             next_state.board[y][x] = '.'
         elif z < MiniShogiGame.QUEEN_ACTIONS + MiniShogiGame.KNIGHT_ACTIONS + MiniShogiGame.PR_QUEEN_ACTIONS + MiniShogiGame.PR_KNIGHT_ACTIONS:
@@ -448,9 +448,9 @@ class MiniShogiGameState:
         for i in range(0, len(state.hand2)):
             stack[len(MiniShogiGame.ORDER) + len(MiniShogiGame.HAND_ORDER) +
                   MiniShogiGame.HAND_ORDER.index(state.hand2[i].upper())] += 1
-        for i in range(0, state.repetitions):
+        '''for i in range(0, state.repetitions):
             stack[len(MiniShogiGame.ORDER) + (2 * len(MiniShogiGame.HAND_ORDER)) +
-                  i] = np.ones((MiniShogiGame.BOARD_X, MiniShogiGame.BOARD_Y), dtype=int)
+                  i] = np.ones((MiniShogiGame.BOARD_X, MiniShogiGame.BOARD_Y), dtype=int)'''
         stack[len(MiniShogiGame.ORDER) + (2 * len(MiniShogiGame.HAND_ORDER)) +
               MiniShogiGame.ALLOWED_REPEATS] = (
             np.ones((MiniShogiGame.BOARD_X, MiniShogiGame.BOARD_Y), dtype=int) if state.colour == 'W' else np.ones(
@@ -491,10 +491,10 @@ class MiniShogiGameState:
 
         repetitions = 0
 
-        for i in range(len(MiniShogiGame.ORDER) + (2 * len(MiniShogiGame.HAND_ORDER)),
+        '''for i in range(len(MiniShogiGame.ORDER) + (2 * len(MiniShogiGame.HAND_ORDER)),
                        len(MiniShogiGame.ORDER) + (2 * len(MiniShogiGame.HAND_ORDER)) + MiniShogiGame.ALLOWED_REPEATS):
             if stack[i][0][0] == 1:
-                repetitions += 1
+                repetitions += 1'''
         colour = 'W' if stack[len(
             MiniShogiGame.ORDER) + (2 * len(MiniShogiGame.HAND_ORDER)) + MiniShogiGame.ALLOWED_REPEATS][0][
                             0] == 1 else 'B'
