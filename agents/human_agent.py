@@ -39,13 +39,14 @@ class HumanAgent(Agent):
                 #new_x -=1
                 #y = MiniShogiGame.BOARD_Y - y
                 #new_y = MiniShogiGame.BOARD_Y - new_y
+
                 magnitude, direction = MiniShogiGame.get_direction(x, y, new_x, new_y)
                 #print(magnitude)
                 #print(direction)
                 zd = direction * MiniShogiGame.MAX_MOVE_MAGNITUDE + (magnitude - 1)
                 zp = MiniShogiGame.QUEEN_ACTIONS + MiniShogiGame.KNIGHT_ACTIONS + \
                         direction * MiniShogiGame.MAX_MOVE_MAGNITUDE + (magnitude - 1)
-                #print('trying (z, y, x): (' + str(z) + ', ' + str(y) + ', ' + str(x) + ')')
+                print('trying (z, y, x): (' + str(zd) + ', ' + str(y) + ', ' + str(x) + ')')
                 if actions[zd][y][x] == 1 and actions[zp][y][x] == 1:
                     print('Promote (y)/(n)?')
                     inp = input('>')

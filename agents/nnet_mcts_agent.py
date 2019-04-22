@@ -18,12 +18,13 @@ from utils.normalise import normalise_examples
 
 
 class NNetMCTSAgent(Agent):
-    def __init__(self, nnet, comp=False):
+    def __init__(self, nnet, comp=False, verb=False):
         super().__init__()
         self.comp = comp
         self.args = config.args
         self.skip_first_self_play = False
         self.nnet = nnet
+        self.verb = verb
         self.MCTS = NNetMCTS(nnet=self.nnet)
         self.example_history = []
 
@@ -43,13 +44,47 @@ class NNetMCTSAgent(Agent):
                         game.game_state.colour)
 
         next_action = action_pool[np.random.choice(len(action_pool), p=pi_list)]
+
+        if self.verb:
+            z, y, x = next_action
+            if z < MiniShogiGame.QUEEN_ACTIONS:
+                direction = z // MiniShogiGame.MAX_MOVE_MAGNITUDE
+                magnitude = (z % MiniShogiGame.MAX_MOVE_MAGNITUDE) + 1
+                new_x, new_y = MiniShogiGame.get_coordinates(x, y, magnitude, direction)
+                x = chr(ord('a') + 5 - x - 1)
+                y = y + 1
+                new_x = chr(ord('a') + 5- new_x - 1)
+                new_y = new_y + 1
+                print('move {0}{1}{2}{3}'.format(x, y, new_x, new_y))
+            elif z < MiniShogiGame.QUEEN_ACTIONS + MiniShogiGame.KNIGHT_ACTIONS:
+                pass
+            elif z < MiniShogiGame.QUEEN_ACTIONS + MiniShogiGame.KNIGHT_ACTIONS + MiniShogiGame.PR_QUEEN_ACTIONS:
+                direction = (z - MiniShogiGame.QUEEN_ACTIONS -
+                             MiniShogiGame.KNIGHT_ACTIONS) // MiniShogiGame.MAX_MOVE_MAGNITUDE
+                magnitude = ((z - MiniShogiGame.QUEEN_ACTIONS - MiniShogiGame.KNIGHT_ACTIONS) %
+                             MiniShogiGame.MAX_MOVE_MAGNITUDE) + 1
+                new_x, new_y = MiniShogiGame.get_coordinates(x, y, magnitude, direction)
+                x = chr(ord('a') + 5-x - 1)
+                y = y + 1
+                new_x = chr(ord('a') + 5 - new_x - 1)
+                new_y = new_y + 1
+                print('move {0}{1}{2}{3}!'.format(x, y, new_x, new_y))
+
+            elif z < MiniShogiGame.QUEEN_ACTIONS + MiniShogiGame.KNIGHT_ACTIONS + MiniShogiGame.PR_QUEEN_ACTIONS + MiniShogiGame.PR_KNIGHT_ACTIONS:
+                pass  # TODO PROMOTED KINGHT MOVES
+            else:
+                piece_index = z - MiniShogiGame.QUEEN_ACTIONS - MiniShogiGame.KNIGHT_ACTIONS - MiniShogiGame.PR_KNIGHT_ACTIONS - MiniShogiGame.PR_QUEEN_ACTIONS
+                piece = MiniShogiGame.HAND_ORDER[piece_index]
+                piece = piece.lower()
+                x = chr(ord('a') + 5 - x - 1)
+                y = y + 1
+                print('move {0}@{1}{2}'.format(piece, x, y))
+
         #logging.debug('Value: {0}\nProbs: {1}'.format(self.MCTS.q_sa[game.game_state, next_action], self.MCTS.get_action_probs(game.game_state, tau=1)))
+        #logging.debug(action_pool)
+        #for action in action_pool:
+        #    logging.debug(self.MCTS.n_sa[game.game_state,action])
 
-
-        #logging.info('Selecting action with q={0} n={1} p={2}'.format(
-        #    self.MCTS.q_sa.get((game.game_state, next_action), 'n/a'),
-        #    self.MCTS.n_sa.get((game.game_state, next_action), 'n/a'),
-        #    self.MCTS.p_s[game.game_state][next_action]))
 
         game.take_action(next_action)
 
@@ -60,7 +95,7 @@ class NNetMCTSAgent(Agent):
         game = MiniShogiGame()
 
         while True:
-            logging.debug('\tStep: #{0}'.format(game.game_state.move_count))
+            #logging.debug('\tStep: #{0}'.format(game.game_state.move_count))
             # logging.info(game.game_state.print_state(0, flip=game.game_state.colour == 'B'))
             tau = int(game.game_state.move_count < self.args.tau)
             action = self.act(game, tau)
@@ -180,13 +215,18 @@ class NNetMCTSAgent(Agent):
         with open(filename_last, 'wb+') as f:
             Pickler(f).dump(self.example_history)
 
-    def load_examples(self, folder='checkpoints', filename='example_last.data'):
+    def load_examples(self, folder='checkpoints', filename='examples_last.data'):
         examples_file = os.path.join(folder, filename)
 
         if os.path.isfile(examples_file):
             with open(examples_file, 'rb') as f:
                 self.example_history = Unpickler(f).load()
-                self.skip_first_self_play = True
-                logging.info('Examples loaded, skipping first self play')
+                logging.info('Examples loaded')
+                x = os.path.join(folder, 'examples' + str(self.args.start_val) + '.data')
+                if os.path.isfile(x):
+                    logging.info(str(x) + ' loaded, skipping first self-play')
+                    self.skip_first_self_play = True
+                else:
+                    logging.info(str(x) + ' not found, starting self-play')
         else:
             logging.warning('Example file not found')

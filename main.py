@@ -73,10 +73,10 @@ if __name__ == '__main__':
                         datefmt='%m/%d/%Y %I:%M:%S %p:',
                         filename='logs/game.log',
                         filemode='a',
-                        level=logging.INFO)
+                        level=logging.DEBUG)
     np.set_printoptions(threshold=sys.maxsize)
     #play_first_gen()
-    play()
+    #play()
 
     nnet = MiniShogiNNetWrapper()
     nnet.nnet.model.summary()
