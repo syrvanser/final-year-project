@@ -19,7 +19,7 @@ class BasicMCTSAgent(Agent):
                 #logging.debug('Playout: #{0}'.format(i))
             self.MCTS.search(game)
 
-        action_pool = game.action_matrix_to_array(game.game_state.allowed_actions())
+        #action_pool = game.action_matrix_to_array(game.game_state.allowed_actions())
         # states_pool = [Game.next_state(game.game_state, action) for action in action_pool]
         # logging.debug('action pool size: ' + str(len(action_pool)))
         states_pool = game.game_state.next_states_array()

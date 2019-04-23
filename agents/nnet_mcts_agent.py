@@ -51,10 +51,17 @@ class NNetMCTSAgent(Agent):
                 direction = z // MiniShogiGame.MAX_MOVE_MAGNITUDE
                 magnitude = (z % MiniShogiGame.MAX_MOVE_MAGNITUDE) + 1
                 new_x, new_y = MiniShogiGame.get_coordinates(x, y, magnitude, direction)
-                x = chr(ord('a') + 5 - x - 1)
-                y = y + 1
-                new_x = chr(ord('a') + 5- new_x - 1)
-                new_y = new_y + 1
+                if game.game_state.colour == 'B':
+                    x = chr(ord('a') + 5 - x - 1)
+                    y = y + 1
+                    new_x = chr(ord('a') + 5- new_x - 1)
+                    new_y = new_y + 1
+                else:
+                    x = chr(ord('a') + x)
+                    y = 5 - y
+                    new_x = chr(ord('a') + new_x)
+                    new_y = 5 - new_y
+
                 print('move {0}{1}{2}{3}'.format(x, y, new_x, new_y))
             elif z < MiniShogiGame.QUEEN_ACTIONS + MiniShogiGame.KNIGHT_ACTIONS:
                 pass
@@ -64,10 +71,16 @@ class NNetMCTSAgent(Agent):
                 magnitude = ((z - MiniShogiGame.QUEEN_ACTIONS - MiniShogiGame.KNIGHT_ACTIONS) %
                              MiniShogiGame.MAX_MOVE_MAGNITUDE) + 1
                 new_x, new_y = MiniShogiGame.get_coordinates(x, y, magnitude, direction)
-                x = chr(ord('a') + 5-x - 1)
-                y = y + 1
-                new_x = chr(ord('a') + 5 - new_x - 1)
-                new_y = new_y + 1
+                if game.game_state.colour == 'B':
+                    x = chr(ord('a') + 5 - x - 1)
+                    y = y + 1
+                    new_x = chr(ord('a') + 5- new_x - 1)
+                    new_y = new_y + 1
+                else:
+                    x = chr(ord('a') + x)
+                    y = 5 - y
+                    new_x = chr(ord('a') + new_x)
+                    new_y = 5 - new_y
                 print('move {0}{1}{2}{3}!'.format(x, y, new_x, new_y))
 
             elif z < MiniShogiGame.QUEEN_ACTIONS + MiniShogiGame.KNIGHT_ACTIONS + MiniShogiGame.PR_QUEEN_ACTIONS + MiniShogiGame.PR_KNIGHT_ACTIONS:
@@ -76,15 +89,20 @@ class NNetMCTSAgent(Agent):
                 piece_index = z - MiniShogiGame.QUEEN_ACTIONS - MiniShogiGame.KNIGHT_ACTIONS - MiniShogiGame.PR_KNIGHT_ACTIONS - MiniShogiGame.PR_QUEEN_ACTIONS
                 piece = MiniShogiGame.HAND_ORDER[piece_index]
                 piece = piece.lower()
-                x = chr(ord('a') + 5 - x - 1)
-                y = y + 1
+                if game.game_state.colour == 'B':
+                    x = chr(ord('a') + 5 - x - 1)
+                    y = y + 1
+                else:
+                    x = chr(ord('a') + x)
+                    y = 5 - y
+
                 print('move {0}@{1}{2}'.format(piece, x, y))
 
         #logging.debug('Value: {0}\nProbs: {1}'.format(self.MCTS.q_sa[game.game_state, next_action], self.MCTS.get_action_probs(game.game_state, tau=1)))
         #logging.debug(action_pool)
         #for action in action_pool:
         #    logging.debug(self.MCTS.n_sa[game.game_state,action])
-
+        #    logging.info('Value: {0}\nProb: {1}'.format(self.MCTS.q_sa[game.game_state, action], self.MCTS.n_sa[game.game_state, action]))
 
         game.take_action(next_action)
 

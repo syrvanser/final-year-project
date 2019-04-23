@@ -30,7 +30,7 @@ def main():
                         datefmt='%m/%d/%Y %I:%M:%S %p:',
                         filename='logs/game.log',
                         filemode='a',
-                        level=logging.DEBUG)
+                        level=logging.INFO)
     np.set_printoptions(threshold=sys.maxsize)
 
     stack = []
@@ -66,7 +66,7 @@ def main():
         elif command == 'go':
             if turn:
                 agent.act(g)
-                logging.info(g.game_state.print_state())
+                logging.debug(g.game_state.print_state())
                 turn = False
 
 
@@ -78,7 +78,7 @@ def main():
             turn = True
             _, command = command.split()
             winboard_agent.winboard_to_move(g, command)
-            logging.info(g.game_state.print_state())
+            logging.debug(g.game_state.print_state())
             if forced:
                 stack.append('go')
 
