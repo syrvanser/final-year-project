@@ -1,5 +1,5 @@
-from keras.models import *
 from keras.layers import *
+from keras.models import *
 from keras.optimizers import *
 from keras.regularizers import l2
 
@@ -7,7 +7,7 @@ import config
 from games import MiniShogiGame
 
 
-class MiniShogiNNetConvResNet:
+class MiniShogiResNet:
 
     def __init__(self):
         self.args = config.args
@@ -28,7 +28,8 @@ class MiniShogiNNetConvResNet:
         for i in range(self.args.res_layer_num):
             x = self.build_block(x, i + 1)
 
-        v = Conv2D(filters=1, kernel_size=1, padding='same', data_format='channels_last', kernel_regularizer=l2(self.args.reg),
+        v = Conv2D(filters=1, kernel_size=1, padding='same', data_format='channels_last',
+                   kernel_regularizer=l2(self.args.reg),
                    name='value_conv_1')(x)
 
         v = BatchNormalization(axis=3, name='value_batch_norm_1')(v)
@@ -38,16 +39,19 @@ class MiniShogiNNetConvResNet:
         v = ReLU(name='value_relu_2')(v)
         v = Dense(1, activation='tanh', name='value_dense_2', kernel_regularizer=l2(self.args.reg))(v)
 
-        pi = Conv2D(filters=MiniShogiGame.ACTION_STACK_HEIGHT, kernel_size=1, padding='same', data_format='channels_last', kernel_regularizer=l2(self.args.reg),
+        pi = Conv2D(filters=MiniShogiGame.ACTION_STACK_HEIGHT, kernel_size=1, padding='same',
+                    data_format='channels_last', kernel_regularizer=l2(self.args.reg),
                     name='policy_conv_1')(x)
         pi = BatchNormalization(axis=3, name='policy_batch_norm_1')(pi)
         pi = ReLU(name='policy_relu_1')(pi)
         pi = Flatten(name='policy_flatten_1')(pi)
-        pi = Dense(action_matrix_shape, activation='softmax', name='policy_dense_1', kernel_regularizer=l2(self.args.reg))(pi)
+        pi = Dense(action_matrix_shape, activation='softmax', name='policy_dense_1',
+                   kernel_regularizer=l2(self.args.reg))(pi)
 
         self.model = Model(inputs=nn_input, outputs=[pi, v])
         self.model.compile(loss={'policy_dense_1': tf.nn.softmax_cross_entropy_with_logits_v2,
-                                 'value_dense_2': 'mean_squared_error'}, optimizer=SGD(lr=self.args.lr, decay=1e-6, momentum=0.9, nesterov=True))
+                                 'value_dense_2': 'mean_squared_error'},
+                           optimizer=SGD(lr=self.args.lr, decay=1e-6, momentum=0.9, nesterov=True))
 
     def build_block(self, x, index):
         in_x = x

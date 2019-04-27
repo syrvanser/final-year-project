@@ -1,9 +1,7 @@
-import logging
 import re
 
 from agents import Agent
-from games import MiniShogiGame, MiniShogiGameState
-from pandas import DataFrame
+from games import MiniShogiGame
 
 
 class WinBoardAgent(Agent):
@@ -21,12 +19,12 @@ class WinBoardAgent(Agent):
         if re.match(drop_regex, wb_string):
             piece, _, x, y = tuple(wb_string)
             if game.game_state.colour == 'W':
-                x = int(ord(x)-ord('a'))
+                x = int(ord(x) - ord('a'))
                 y = 5 - int(y)
             else:
                 x = int(ord('a') - ord(x) + 5 - 1)
                 y = int(y) - 1
-            #print('{0}, {1}'.format(x, y))
+            # print('{0}, {1}'.format(x, y))
             # x -= 1
             # y = MiniShogiGame.BOARD_Y - y
             z = MiniShogiGame.QUEEN_ACTIONS + MiniShogiGame.KNIGHT_ACTIONS + MiniShogiGame.PR_QUEEN_ACTIONS + \
@@ -43,18 +41,17 @@ class WinBoardAgent(Agent):
             x, y, new_x, new_y, *_ = tuple(wb_string)
 
             if game.game_state.colour == 'W':
-                x = int(ord(x)-ord('a'))
+                x = int(ord(x) - ord('a'))
                 y = 5 - int(y)
-                new_x = int(ord(new_x)-ord('a'))
+                new_x = int(ord(new_x) - ord('a'))
                 new_y = 5 - int(new_y)
             else:
                 x = int(ord('a') - ord(x) + 5 - 1)
                 y = int(y) - 1
-                new_x = int(ord('a') - ord(new_x) + 5 -1)
+                new_x = int(ord('a') - ord(new_x) + 5 - 1)
                 new_y = int(new_y) - 1
 
-
-            #print('{0}, {1} -> {2}, {3}'.format(x, y, new_x,new_y))
+            # print('{0}, {1} -> {2}, {3}'.format(x, y, new_x,new_y))
 
             # x -=1
             # new_x -=1
@@ -66,7 +63,7 @@ class WinBoardAgent(Agent):
             zd = direction * MiniShogiGame.MAX_MOVE_MAGNITUDE + (magnitude - 1)
             zp = MiniShogiGame.QUEEN_ACTIONS + MiniShogiGame.KNIGHT_ACTIONS + \
                  direction * MiniShogiGame.MAX_MOVE_MAGNITUDE + (magnitude - 1)
-            #print('trying (z, y, x): (' + str(zd) + ', ' + str(y) + ', ' + str(x) + ')')
+            # print('trying (z, y, x): (' + str(zd) + ', ' + str(y) + ', ' + str(x) + ')')
             if actions[zd][y][x] == 1 and actions[zp][y][x] == 1:
                 if pr:
                     game.take_action((zp, y, x))

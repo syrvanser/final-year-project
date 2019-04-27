@@ -1,5 +1,5 @@
-from keras.models import *
 from keras.layers import *
+from keras.models import *
 from keras.optimizers import *
 from keras.regularizers import l2
 
@@ -9,7 +9,6 @@ from games import MiniShogiGame
 
 class MiniShogiNNetKeras:
     def __init__(self):
-
         self.args = config.args
         # Neural Net
         input_shape = (
@@ -45,15 +44,15 @@ class MiniShogiNNetKeras:
 
         self.model = Model(inputs=nn_input, outputs=[pi, v])
         self.model.compile(loss=['categorical_crossentropy', 'mean_squared_error'], optimizer=Adam(self.args.lr))
-        #self.model.summary()
+        # self.model.summary()
 
     def build_block(self, x, index):
-        #in_x = x
+        # in_x = x
         x = Conv2D(filters=self.args.num_filters, kernel_size=self.args.kernel_size, padding='same',
                    data_format="channels_last", use_bias=False, kernel_regularizer=l2(self.args.reg),
                    name='block_' + str(index) + '_conv')(x)
         x = BatchNormalization(axis=3, name='block_' + str(index) + "_batch_norm")(x)
         x = ReLU(name='block_' + str(index) + '_relu')(x)
-        #x = Add(name='block_' + str(index) + '_add')([in_x, x])
+        # x = Add(name='block_' + str(index) + '_add')([in_x, x])
 
         return x

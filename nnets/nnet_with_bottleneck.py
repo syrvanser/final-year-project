@@ -1,7 +1,6 @@
-from keras.models import *
 from keras.layers import *
+from keras.models import *
 from keras.optimizers import *
-from keras.regularizers import l2
 
 import config
 from games import MiniShogiGame
@@ -12,7 +11,8 @@ class MiniShogiNNetBottleNeck:
         args = config.args
 
         # Neural Net
-        input_shape = (MiniShogiGame.BOARD_Y, MiniShogiGame.BOARD_X, MiniShogiGame.STATE_STACK_HEIGHT)  # s: batch_size x board_x x board_y x moves_count
+        input_shape = (MiniShogiGame.BOARD_Y, MiniShogiGame.BOARD_X,
+                       MiniShogiGame.STATE_STACK_HEIGHT)  # s: batch_size x board_x x board_y x moves_count
         action_matrix_shape = MiniShogiGame.ACTION_STACK_HEIGHT * MiniShogiGame.BOARD_Y * MiniShogiGame.BOARD_X
         # x = Reshape()(self.input_boards)                # batch_size  x board_x x board_y x z
         nn_input = Input(shape=input_shape)

@@ -1,14 +1,12 @@
 import logging
-import math
-from math import sqrt
-from operator import add
 
+import math
 import numpy as np
+from math import sqrt
 
 import config
 from games import MiniShogiGame, MiniShogiGameState
 from mcts import MCTS
-
 
 EPS = 1e-8
 
@@ -68,14 +66,13 @@ class NNetMCTS(MCTS):
                 self.p_s[current_state] = self.p_s[current_state] * valid_moves
                 sum_prob_vector = np.sum(self.p_s[current_state])
                 if sum_prob_vector > 0:
-
                     self.p_s[current_state] /= sum_prob_vector  # renormalize
-                    #logging.info(self.p_s[current_state])
+                    # logging.info(self.p_s[current_state])
                 else:
                     # if all valid moves were masked make all valid moves equally probable
                     logging.warning(str(id(self)) + ': all valid moves were masked, making all equally probable')
                     self.p_s[current_state] = valid_moves
-                    # renormilise
+                    # renormalise
                     self.p_s[current_state] = self.p_s[current_state] / np.sum(self.p_s[current_state])
 
                 self.action_arrays[current_state] = MiniShogiGameState.action_matrix_to_action_array(valid_moves)
@@ -84,10 +81,10 @@ class NNetMCTS(MCTS):
 
             action_pool_array = self.action_arrays[current_state]
             p_s = self.p_s[current_state]
-            if i == 0: #if root node
+            if i == 0:  # if root node
                 noise = np.random.dirichlet([config.args.dir_alpha] * len(action_pool_array))
                 for index, a in enumerate(action_pool_array):
-                    p_s[a] = (1-config.args.dir_epsilon) * p_s[a] + config.args.dir_epsilon * noise[index]
+                    p_s[a] = (1 - config.args.dir_epsilon) * p_s[a] + config.args.dir_epsilon * noise[index]
 
             next_action = max(action_pool_array, key=(
                 lambda a: (self.q_sa[(current_state, a)] + self.c_puct * p_s[a] *
@@ -114,4 +111,3 @@ class NNetMCTS(MCTS):
                 v = -v
                 self.n_sa[(parent, action)] += 1
             self.n_s[parent] += 1
-

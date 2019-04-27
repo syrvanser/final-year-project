@@ -1,8 +1,7 @@
-import os
-from hashlib import sha1
-from pickle import Unpickler, Pickler
-from sklearn.preprocessing import normalize
 import logging
+import os
+from pickle import Unpickler, Pickler
+
 
 def test():
     examples_file = os.path.join('checkpoints', 'examples_last.data')
@@ -10,8 +9,18 @@ def test():
         with open(examples_file, 'rb') as f:
             example_history = Unpickler(f).load()
             logging.debug('Examples loaded')
-            with open('checkpoints/examples_normalised.data', 'wb+') as f:
-                Pickler(f).dump(normalise_examples(example_history))
+            for i, ex in enumerate(example_history):
+                for j, e in enumerate(ex):
+                    state = e[0]
+                    # print(e)
+                    if state[4][1][4] == 1:
+                        # if state[len(MiniShogiGame.ORDER) + (2 * len(MiniShogiGame.HAND_ORDER)) + MiniShogiGame.ALLOWED_REPEATS][0][0] != 1:
+                        example_history[i][j] = (e[0], e[1], -1)
+                    if state[2][3][0] == 1:
+                        # if state[len(MiniShogiGame.ORDER) + (2 * len(MiniShogiGame.HAND_ORDER)) + MiniShogiGame.ALLOWED_REPEATS][0][0] == 1:
+                        example_history[i][j] = (e[0], e[1], 1)
+                with open('checkpoints/examples_last.data', 'wb+') as f:
+                    Pickler(f).dump(example_history)
     else:
         logging.error('examples file not found')
 
@@ -40,3 +49,4 @@ def normalise_examples(example_history):
     logging.info('After compression: ' + str(len(normalised)))
     return normalised
 
+# test()

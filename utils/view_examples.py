@@ -1,14 +1,15 @@
 import logging
 import os
+from pickle import Unpickler
 
 import numpy as np
-from pickle import Unpickler
 
 
 def load_examples(folder='checkpoints', filename='examples0.data'):
     examples_file = os.path.join(folder, filename)
     with open(examples_file, 'rb') as f:
         return Unpickler(f).load()
+
 
 logging.basicConfig(format=' %(asctime)s %(name)-30s %(levelname)-8s %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p:',

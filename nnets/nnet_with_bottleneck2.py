@@ -1,7 +1,6 @@
-from keras.models import *
 from keras.layers import *
+from keras.models import *
 from keras.optimizers import *
-from keras.regularizers import l2
 
 import config
 from games import MiniShogiGame
@@ -12,7 +11,8 @@ class MiniShogiNNetBottleNeck2:
         args = config.args
 
         # Neural Net
-        input_shape = (MiniShogiGame.BOARD_Y, MiniShogiGame.BOARD_X, MiniShogiGame.STATE_STACK_HEIGHT)  # s: batch_size x board_x x board_y x moves_count
+        input_shape = (MiniShogiGame.BOARD_Y, MiniShogiGame.BOARD_X,
+                       MiniShogiGame.STATE_STACK_HEIGHT)  # s: batch_size x board_x x board_y x moves_count
         action_matrix_shape = MiniShogiGame.ACTION_STACK_HEIGHT * MiniShogiGame.BOARD_Y * MiniShogiGame.BOARD_X
         # x = Reshape()(self.input_boards)                # batch_size  x board_x x board_y x z
         nn_input = Input(shape=input_shape)
@@ -42,7 +42,6 @@ class MiniShogiNNetBottleNeck2:
         x = BatchNormalization(axis=3, name='batch_norm_3')(x)
         x = ReLU(name='relu_3')(x)
 
-
         v = Conv2D(filters=1, kernel_size=1, padding='same',
                    data_format='channels_last', use_bias=False,
                    name='value_conv')(x)
@@ -55,7 +54,8 @@ class MiniShogiNNetBottleNeck2:
 
         v = Dense(1, activation='tanh', name='value_dense_out', use_bias=False)(v)
 
-        pi = Conv2D(filters=84, kernel_size=1, padding='same', data_format='channels_last', use_bias=False, name='policy_conv_2')(x)
+        pi = Conv2D(filters=84, kernel_size=1, padding='same', data_format='channels_last', use_bias=False,
+                    name='policy_conv_2')(x)
         pi = BatchNormalization(axis=3, name='policy_batch_norm_2')(pi)
         pi = ReLU(name='policy_relu_2')(pi)
         pi = Flatten(name='policy_flatten')(pi)

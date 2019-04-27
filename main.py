@@ -1,16 +1,13 @@
 import logging
-import random
 import sys
 import time
 
-import tensorflow as tf
-
 import numpy as np
+from keras.utils.vis_utils import plot_model
 
-from agents import HumanAgent, NNetMCTSAgent, RandomAgent, BasicMCTSAgent
+from agents import HumanAgent, NNetMCTSAgent
 from games import MiniShogiGame
 from nnets import MiniShogiNNetWrapper
-from keras.utils.vis_utils import plot_model
 
 
 def play():
@@ -18,11 +15,11 @@ def play():
     white_wins = 0
     agent1 = HumanAgent()
     nnet = MiniShogiNNetWrapper()
-    #nnet.nnet.model.summary()
+    # nnet.nnet.model.summary()
     plot_model(nnet.nnet.model, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
     agent2 = NNetMCTSAgent(nnet, comp=False)
     print('Preparing neural net')
-    #agent2.train_neural_net()
+    # agent2.train_neural_net()
     agent2.comp = True
     agent2.nnet.load_checkpoint(filename='best.h5')
 
@@ -48,13 +45,14 @@ def play():
                                                                                         time.time() - begin))
                 logging.info('Stats: {0} win {1} ({2}%), {3} win {4} ({5}%)| time: {6}'.format(
                     agent1.__class__.__name__, white_wins, white_wins /
-                    i * 100, agent2.__class__.__name__,
-                    i - white_wins, (i - white_wins) / i * 100,
-                    time.time() - begin))
+                                                           i * 100, agent2.__class__.__name__,
+                                                           i - white_wins, (i - white_wins) / i * 100,
+                                                           time.time() - begin))
                 break
             if g.game_state.move_count > 300:  # stop very long games
                 print('Game too long, terminating')
                 break
+
 
 def play_first_gen():
     nnet1 = MiniShogiNNetWrapper()
@@ -64,19 +62,22 @@ def play_first_gen():
     nnet2.load_checkpoint(filename='best_temp.h5')
     agent1.simulate(nnet2)
 
+
 if __name__ == '__main__':
-    #seed = 42
-    #random.seed(seed)
-    #np.random.seed(seed)
-    #tf.set_random_seed(seed)
+    # seed = 42
+    # random.seed(seed)
+    # np.random.seed(seed)
+    # tf.set_random_seed(seed)
+    for handler in logging.root.handlers[:]:
+        logging.root.removeHandler(handler)
     logging.basicConfig(format=' %(asctime)s %(module)-30s %(levelname)-8s %(message)s',
                         datefmt='%m/%d/%Y %I:%M:%S %p:',
                         filename='logs/game.log',
                         filemode='a',
-                        level=logging.DEBUG)
+                        level=logging.INFO)
     np.set_printoptions(threshold=sys.maxsize)
-    #play_first_gen()
-    #play()
+    # play_first_gen()
+    # play()
 
     nnet = MiniShogiNNetWrapper()
     nnet.nnet.model.summary()

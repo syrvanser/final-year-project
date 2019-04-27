@@ -1,11 +1,9 @@
 import logging
 import os
 import random
-import sys
 import time
 from collections import deque
 from pickle import Pickler, Unpickler
-from itertools import groupby
 
 import numpy as np
 
@@ -29,14 +27,17 @@ class NNetMCTSAgent(Agent):
         self.example_history = []
 
     def act(self, game, tau=1):
+        if game.game_state.game_ended() and self.verb:
+            print('resign')
+
         if self.comp:
             tau = 0
         for i in range(self.args.mcts_iterations):
-            #logging.debug('Playout: #{0}'.format(i))
+            # logging.debug('Playout: #{0}'.format(i))
             self.MCTS.search(game)
 
         action_pool = self.MCTS.action_arrays[game.game_state]
-        pi_list = self.MCTS.get_action_probs(game.game_state, tau=tau)  #list
+        pi_list = self.MCTS.get_action_probs(game.game_state, tau=tau)  # list
 
         pi_matrix = MiniShogiGameState.prob_list_to_matrix(pi_list, action_pool)
 
@@ -54,7 +55,7 @@ class NNetMCTSAgent(Agent):
                 if game.game_state.colour == 'B':
                     x = chr(ord('a') + 5 - x - 1)
                     y = y + 1
-                    new_x = chr(ord('a') + 5- new_x - 1)
+                    new_x = chr(ord('a') + 5 - new_x - 1)
                     new_y = new_y + 1
                 else:
                     x = chr(ord('a') + x)
@@ -74,14 +75,14 @@ class NNetMCTSAgent(Agent):
                 if game.game_state.colour == 'B':
                     x = chr(ord('a') + 5 - x - 1)
                     y = y + 1
-                    new_x = chr(ord('a') + 5- new_x - 1)
+                    new_x = chr(ord('a') + 5 - new_x - 1)
                     new_y = new_y + 1
                 else:
                     x = chr(ord('a') + x)
                     y = 5 - y
                     new_x = chr(ord('a') + new_x)
                     new_y = 5 - new_y
-                print('move {0}{1}{2}{3}!'.format(x, y, new_x, new_y))
+                print('move {0}{1}{2}{3}+'.format(x, y, new_x, new_y))
 
             elif z < MiniShogiGame.QUEEN_ACTIONS + MiniShogiGame.KNIGHT_ACTIONS + MiniShogiGame.PR_QUEEN_ACTIONS + MiniShogiGame.PR_KNIGHT_ACTIONS:
                 pass  # TODO PROMOTED KINGHT MOVES
@@ -98,9 +99,9 @@ class NNetMCTSAgent(Agent):
 
                 print('move {0}@{1}{2}'.format(piece, x, y))
 
-        #logging.debug('Value: {0}\nProbs: {1}'.format(self.MCTS.q_sa[game.game_state, next_action], self.MCTS.get_action_probs(game.game_state, tau=1)))
-        #logging.debug(action_pool)
-        #for action in action_pool:
+        # logging.debug('Value: {0}\nProbs: {1}'.format(self.MCTS.q_sa[game.game_state, next_action], self.MCTS.get_action_probs(game.game_state, tau=1)))
+        # logging.debug(action_pool)
+        # for action in action_pool:
         #    logging.debug(self.MCTS.n_sa[game.game_state,action])
         #    logging.info('Value: {0}\nProb: {1}'.format(self.MCTS.q_sa[game.game_state, action], self.MCTS.n_sa[game.game_state, action]))
 
@@ -113,12 +114,15 @@ class NNetMCTSAgent(Agent):
         game = MiniShogiGame()
 
         while True:
-            #logging.debug('\tStep: #{0}'.format(game.game_state.move_count))
+            # logging.debug('\tStep: #{0}'.format(game.game_state.move_count))
             # logging.info(game.game_state.print_state(0, flip=game.game_state.colour == 'B'))
             tau = int(game.game_state.move_count < self.args.tau)
+            _, val = self.MCTS.nnet.predict(game.game_state)
+            logging.info('Value: {0} {1}'.format(val, game.game_state.colour))
             action = self.act(game, tau)
             iteration_examples.append(action)
             if game.game_state.game_ended():
+                logging.info('End value: {0} {1}'.format(val, game.game_state.colour))
                 break
             if game.game_state.move_count > self.args.move_count_limit:  # stop very long games
                 logging.warning('Game too long, terminating')
@@ -128,7 +132,7 @@ class NNetMCTSAgent(Agent):
 
     def train_neural_net(self):
         logging.info('Training {0}'.format(self.nnet.nnet.__class__.__name__))
-        #self.nnet.save_checkpoint(filename='nnet0.h5')
+        # self.nnet.save_checkpoint(filename='nnet0.h5')
         logging.info('Loading previous examples and model')
         try:
             self.load_examples(filename='examples_last.data')
@@ -139,31 +143,32 @@ class NNetMCTSAgent(Agent):
         except Exception as e:
             logging.error(e)
 
-        start_val = self.args.start_val #IMPORTANT
+        start_val = self.args.start_val  # IMPORTANT
 
-        for i in range(start_val, self.args.num_train_cycles+start_val):
+        for i in range(start_val, self.args.num_train_cycles + start_val):
             if (not self.skip_first_self_play) or i > start_val:
                 logging.info('Generating examples')
                 iteration_examples = deque([], maxlen=self.args.max_examples_len)
                 # collect examples from this game
 
                 for e in range(self.args.example_games_per_cycle):
-                    if(e % (self.args.example_games_per_cycle/10) == 0):
-                        logging.info('Example {0}/{1}'.format(e+1, self.args.example_games_per_cycle))
+                    if e % (self.args.example_games_per_cycle / 10) == 0:
+                        logging.info('Example {0}/{1}'.format(e + 1, self.args.example_games_per_cycle))
                     self.MCTS = NNetMCTS(nnet=self.nnet)
                     # collect examples from this game
                     iteration_examples += self.run_single_game()
 
                 self.example_history.append(iteration_examples)
 
-                if len(self.example_history) > self.args.max_example_history_len:
-                    self.example_history.pop(0)
-
                 self.save_examples(i)
-            #exit(0)
-            #train_examples = []
-            #for e in self.example_history:
+            while len(self.example_history) > self.args.max_example_history_len:
+                self.example_history.pop(0)
+            # exit(0)
+            # train_examples = []
+            # for e in self.example_history:
             #    train_examples.extend(e)
+            # logging.info(len(self.example_history))
+
             train_examples = normalise_examples(self.example_history)
             random.shuffle(train_examples)
             logging.info('Starting training...')
@@ -180,10 +185,10 @@ class NNetMCTSAgent(Agent):
             if wins + nwins == 0 or nwins < self.args.threshold:
                 logging.info('Rejecting new NN')
                 self.nnet.save_checkpoint(filename='best.h5')
-                #self.nnet.load_checkpoint(filename='temp.h5')
+                # self.nnet.load_checkpoint(filename='temp.h5')
             else:
                 logging.info('Accepting new NN')
-                #new_nnet.save_checkpoint(filename='temp.h5')
+                # new_nnet.save_checkpoint(filename='temp.h5')
                 new_nnet.save_checkpoint(filename='best.h5')
                 with open("logs/loss.log", "a") as loss_history:
                     loss_history.write(new_nnet.name + '\n')
@@ -207,7 +212,7 @@ class NNetMCTSAgent(Agent):
                 current_agent.act(g, tau=0)
                 # logging.debug(g.game_state.print_state(flip=g.game_state.colour == 'B'))
                 if g.game_state.game_ended():
-                    if(g.game_state.colour == 'W' and x == 0) or (g.game_state.colour == 'B' and x == 1):
+                    if (g.game_state.colour == 'W' and x == 0) or (g.game_state.colour == 'B' and x == 1):
                         new_agent_wins += 1
                     if (g.game_state.colour == 'W' and x == 1) or (g.game_state.colour == 'B' and x == 0):
                         old_agent_wins += 1
@@ -246,5 +251,7 @@ class NNetMCTSAgent(Agent):
                     self.skip_first_self_play = True
                 else:
                     logging.info(str(x) + ' not found, starting self-play')
+                    self.skip_first_self_play = False
+
         else:
             logging.warning('Example file not found')
