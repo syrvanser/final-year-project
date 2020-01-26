@@ -6,3 +6,6 @@ final-year-project.code-workspace
 checkpoints/
 logs/
 profiling_results
+unused_logs/
+tmp/
+report/
